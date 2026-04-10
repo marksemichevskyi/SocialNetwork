@@ -1,0 +1,35 @@
+.header{
+    width: 100vw;
+    height: 5vh;
+    display: flex;
+    align-items:center;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 1.25%;
+    padding-bottom: 1.25%;
+}
+
+.buttons{
+    width: 40vw;
+    height: 2vh;
+    display: flex;
+    margin-left: 40vw;
+}
+
+.logo{
+    width: 7.5vw;
+    height: 1vw;
+    display: flex;
+    margin-right: 20vw
+}
+
+.page_buttons{
+    display: flex;
+    align-items: row;
+}
+
+.side_pannel{
+    width: 18vw;
+    height: 74vh;
+    margin-left: 4.1%;
+}

@@ -1,0 +1,45 @@
+<html lang="en">
+{% load static%}
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href = "{% static 'base.css' %}">
+    {% block links %}{% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}<title>Document</title>{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <div class="header">
+        <div class = "logo">
+            
+        </div>
+        <div class = "buttons">
+             <div class = "page_buttons">
+                <div class = "main_page">
+                    <a href = '/main'>Головна</a>
+                </div>
+                <div class = "friends_page">
+                    <a href = '/friends'>Друзі</a>
+                </div>
+                <div class = "user_page">
+                    <a href = '/user'>Користувач</a>
+                </div>
+                <div class = "post_page">
+                    <a href = '/post'>Мої публікації</a>
+                </div>
+             </div>
+
+             <div class = "login_button">
+
+             </div>
+        </div>
+    </div>
+    
+    <div class="side_pannel">
+       {% block side_pannel_content%}
+       {% endblock %}
+
+    </div>
+</body>
+</html>
