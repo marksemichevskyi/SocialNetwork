@@ -12,21 +12,25 @@
 
     <div class="header">
         <div class = "logo">
-            
+            <img src = "{% static 'images/logo_image.png' %}">
         </div>
         <div class = "buttons">
              <div class = "page_buttons">
-                <div class = "main_page">
-                    <a href = '/main'>Головна</a>
+                <div class = "page_text_button">
+                    <a class = 'text' href = '/main'>Головна</a>
+                    <img class = 'image' src = "{% static 'images/main_page_icon.png' %}">
+                </div> 
+                <div class = "page_text_button">
+                    <a class = 'text' href = '/friends'>Друзі</a>
+                     <img class = 'image' src = "{% static 'images/friends_page_icon.png' %}">
                 </div>
-                <div class = "friends_page">
-                    <a href = '/friends'>Друзі</a>
+                <div class = "page_text_button">
+                    <a class = 'text' href = '/user'>Користувач</a>
+                     <img class="image" src = "{% static 'images/settings_page_icon.png' %}">
                 </div>
-                <div class = "user_page">
-                    <a href = '/user'>Користувач</a>
-                </div>
-                <div class = "post_page">
-                    <a href = '/post'>Мої публікації</a>
+                <div class = "page_text_button">
+                    <a class = 'text' href = '/post'>Мої публікації</a>
+                     <img class = "image" src = "{% static 'images/post_page_icon.png' %}">
                 </div>
              </div>
 
