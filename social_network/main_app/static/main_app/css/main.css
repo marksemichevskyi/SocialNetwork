@@ -1,0 +1,38 @@
+.side_pannel_div{
+    box-sizing: border-box;
+    width: 100%;
+    height: 32%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 4%;
+    padding-bottom: 4%;
+    
+}
+
+.side_pannel{
+    gap: 0.5vh;
+}
+
+#user_profile_div{
+    width: 100%;
+    height: 35%;
+    display: flex;
+    
+}
+
+.side_pannel_text{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.side_pannel_p{
+    float: left;
+}
+
+.side_pannel_link{
+    float: right;
+}

@@ -33,8 +33,10 @@
 .side_pannel{
     width: 18vw;
     height: 74vh;
-    margin-left: 4.1%;
+    margin-left: 5.5vh;
     display: flex;
+    display: flex;
+    flex-direction: column;
 }
 
 .page_text_button{

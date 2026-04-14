@@ -1,1 +1,26 @@
 {% extends "base.html" %}
+{% load static %}
+{% block links %}
+    <link rel="stylesheet" href = "{% static 'main_app/css/main.css' %}">
+{% endblock %}
+
+{% block side_pannel_content %}
+    <div id = "user_profile_div" ></div>
+    <div class = "side_pannel_div">
+        <div class = "side_pannel_text">
+            <a class = "side_pannel_link">Дивитись всі</a>
+            <p class = "side_pannel_p">Запити</p>
+        </div>
+        <div class = "side_pannel_content">
+        </div>
+    </div>
+    <div class = "side_pannel_div">
+        <div class = "side_pannel_text">
+            <a class = "side_pannel_link">Дивитись всі</a>
+            <p class = "side_pannel_p">Запити</p>
+        </div>
+        <div class = "side_pannel_content">
+            
+        </div>
+    </div>
+{% endblock %}
