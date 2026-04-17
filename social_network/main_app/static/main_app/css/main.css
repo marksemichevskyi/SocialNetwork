@@ -1,38 +1,106 @@
-.side_pannel_div{
+.side_panel_div{
     box-sizing: border-box;
     width: 100%;
-    height: 32%;
+    border-color:#CDCED2 ;
+    border-radius: 1vh;
+    border-style: solid;
+    border-width: 0.1vh;
     display: flex;
     flex-direction: column;
     padding-left: 4%;
     padding-right: 4%;
     padding-top: 4%;
     padding-bottom: 4%;
-    
+    background-color:#ffffff ;
 }
 
-.side_pannel{
+.side_panel{
     gap: 0.5vh;
 }
 
-#user_profile_div{
+.user_profile_div{
+    box-sizing: border-box;
     width: 100%;
-    height: 35%;
+    height: 34vh;
     display: flex;
-    
+    flex-direction: column;
+    border-width: 0.2vh;
+    border-radius: 1vh;
+    border-style: solid;
+    border-color:#CDCED2 ;
+    background-color:#ffffff ;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
 }
 
-.side_pannel_text{
+.side_panel_text{
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between; 
     align-items: center; 
 }
 
-.side_pannel_p{
+.side_panel_p{
     float: left;
 }
 
-.side_pannel_link{
+.side_panel_link{
     float: right;
+}
+
+.profile_div{
+    width: 100%;
+    height: 28vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.avatar_div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.username_div{
+    height: 9vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.name{
+    font-size: 2vw;
+    font-weight: 200;
+}
+
+.info_div{
+    display: flex;
+    flex-direction: row;
+}
+
+.info_slot_div{
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.info_number{
+    font-weight: 200;
+    font-size: 1.5vw;
+}
+
+.info_text{
+    color: #81818D;
+}
+
+#center_info_slot{
+    border-left: 0.2vh solid #CDCED2;
+    border-right: 0.2vh solid #CDCED2;
+
 }

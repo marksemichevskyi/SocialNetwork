@@ -4,22 +4,47 @@
     <link rel="stylesheet" href = "{% static 'main_app/css/main.css' %}">
 {% endblock %}
 
-{% block side_pannel_content %}
-    <div id = "user_profile_div" ></div>
-    <div class = "side_pannel_div">
-        <div class = "side_pannel_text">
-            <a class = "side_pannel_link">Дивитись всі</a>
-            <p class = "side_pannel_p">Запити</p>
+{% block side_panel_content %}
+    <div class = "user_profile_div">
+        <div class = "profile_div">
+            <div class = "avatar_div">
+                <img src = "{% static 'images/avatar_test.png' %}"> 
+            </div>
+            <div class = "username_div">
+                <span class = "name">Lina Li</span>
+                <span class = "username">@thelili</span>
+            </div>
         </div>
-        <div class = "side_pannel_content">
+        <div class = "info_div">
+            <div class = "info_slot_div">
+                <span class = "info_number">566</span>
+                <span class = "info_text">Дописи</span>
+            </div>
+            <div class = "info_slot_div" id = "center_info_slot">
+                <span class = "info_number">12.1K</span>
+                <span class = "info_text">Читачі</span>
+            </div>
+            <div class = "info_slot_div">
+                <span class = "info_number">222</span>
+                <span class = "info_text">Друзі</span>
+            </div>
         </div>
     </div>
-    <div class = "side_pannel_div">
-        <div class = "side_pannel_text">
-            <a class = "side_pannel_link">Дивитись всі</a>
-            <p class = "side_pannel_p">Запити</p>
+
+    <div class = "side_panel_div">
+        <div class = "side_panel_text">
+            <a class = "side_panel_link">Дивитись всі</a>
+            <p class = "side_panel_p">Запити</p>
         </div>
-        <div class = "side_pannel_content">
+        <div class = "side_panel_content">
+        </div>
+    </div>
+    <div class = "side_panel_div">
+        <div class = "side_panel_text">
+            <a class = "side_panel_link">Дивитись всі</a>
+            <p class = "side_panel_p">Повідомлення</p>
+        </div>
+        <div class = "side_panel_content">
             
         </div>
     </div>

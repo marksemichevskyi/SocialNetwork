@@ -15,23 +15,30 @@
             <img src = "{% static 'images/logo_image.png' %}">
         </div>
         <div class = "buttons">
-             <div class = "page_buttons">
-                <div class = "page_text_button">
-                    <a class = 'text' href = '/main'>Головна</a>
+             <div class = "page_buttons base_text_color">
+                <a class = "page_text_button" href = '/main'>
                     <img class = 'image' src = "{% static 'images/main_page_icon.png' %}">
-                </div> 
-                <div class = "page_text_button">
-                    <a class = 'text' href = '/friends'>Друзі</a>
-                     <img class = 'image' src = "{% static 'images/friends_page_icon.png' %}">
-                </div>
-                <div class = "page_text_button">
-                    <a class = 'text' href = '/user'>Користувач</a>
-                     <img class="image" src = "{% static 'images/settings_page_icon.png' %}">
-                </div>
-                <div class = "page_text_button">
-                    <a class = 'text' href = '/post'>Мої публікації</a>
-                     <img class = "image" src = "{% static 'images/post_page_icon.png' %}">
-                </div>
+                    <span class = 'text' >Головна</span>
+                    
+                </a> 
+                <a class = "page_text_button" href = '/post'>
+                    <img class = "image" src = "{% static 'images/post_page_icon.png' %}">
+                    <span class = 'text'>Мої публікації</span>  
+                </a>
+                <a class = "page_text_button" href = '/friends'>
+                    <img class = 'image' src = "{% static 'images/friends_page_icon.png' %}">
+                    <span class = 'text' >Друзі</span>
+                </a>
+                <a class = "page_text_button" href = '/chat'>
+                    <img class = 'image' src = "{% static 'images/chat_page_icon.png' %}">
+                    <span class = 'text'>Чати</span>
+                </a>
+
+                <a class = "page_text_button" href = '/user'>
+                    <img class="image" src = "{% static 'images/settings_page_icon.png' %}">
+                    <span class = 'text' >Налаштування</span>
+                </a>
+               
              </div>
 
              <div class = "login_button">
@@ -40,8 +47,8 @@
         </div>
     </div>
     
-    <div class="side_pannel">
-       {% block side_pannel_content%}
+    <div class="side_panel">
+       {% block side_panel_content%}
        {% endblock %}
 
     </div>
