@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block links %}
+<link rel="stylesheet" href = "{% static 'user_app/css/settings.css' %}">
+{% endblock %}
+
+{% block side_panel_content%}
+    <button class = "button" id = "information"> Особиста інформація</button>
+    <button class = "button" id = "album">Альбоми</button>
+{% endblock %}
+
+{% block content %}
+    <h1></h1>
+{% endblock %}
+
+
+{% block scripts %}
+    <script src = '{% static "user_app/js/settings.js" %}'></script>
+{% endblock %}

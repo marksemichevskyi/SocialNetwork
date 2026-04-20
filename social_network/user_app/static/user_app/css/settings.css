@@ -1,0 +1,30 @@
+.button{
+    width:fit-content;
+    color: #81818D;
+    display: flex;
+    justify-content: left;
+    padding-bottom: 1.2vh;
+    align-items: top;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    font-weight: 100;
+    font-family: 'GTWalsheimPro';
+    font-size: 1rem;
+
+}
+
+.side_panel{
+    display: flex;
+    justify-content: space-between;
+    height: 11vh;
+
+}
+
+.selected{
+    color: black;
+    font-weight: 200;
+    border-bottom: 0.5vh solid #543C52;
+}
+

@@ -8,8 +8,6 @@
     {% block title %}<title>Document</title>{% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
-
     <div class="header">
         <div class = "logo">
             <img src = "{% static 'images/logo_image.png' %}">
@@ -47,10 +45,18 @@
         </div>
     </div>
     
-    <div class="side_panel">
-       {% block side_panel_content%}
-       {% endblock %}
+    <div class = 'body_div'>
+        <div class="side_panel">
+        {% block side_panel_content%}
+        {% endblock %}
+        </div>
 
+        <div class = 'content_div'>
+            {% block content%}
+            {% endblock %}
+    </div>
+    {% block scripts%}
+    {% endblock %}
     </div>
 </body>
 </html>

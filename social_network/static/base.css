@@ -12,18 +12,24 @@
     font-weight: 200;
 }
 body{
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     font-family: 'GTWalsheimPro';
     font-weight: 100;
     background-color: #FAF8FF;
     gap: 1.8vh;
-    
+}
+
+.body_div{
+    box-sizing: border-box;
+    display: flex; 
+    flex-direction: row;  
 }
 
 .header{
     box-sizing: border-box;
-    width: 100vw;
+    width: 100%;
     height: 8.1vh;
     display: flex;
     align-items:center;
@@ -79,7 +85,7 @@ body{
 }
 
 .text{
-    font-size: 1.2vw;
+    font-size: 1rem;
 }
 
 .base_text_color{
