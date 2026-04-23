@@ -25,4 +25,5 @@ urlpatterns = [
     path('user/', include('user_app.urls')),
     path('chat/', include('chat_app.urls')),
     
+    
 ]

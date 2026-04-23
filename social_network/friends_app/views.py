@@ -2,5 +2,5 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 # Create your views here.
-class RenderFriends(TemplateView):
+class FriendsView(TemplateView):
     template_name = "friends.html"

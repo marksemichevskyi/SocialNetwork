@@ -2,5 +2,5 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 # Create your views here.
-class RenderPost(TemplateView):
+class PostView(TemplateView):
     template_name = "post.html"

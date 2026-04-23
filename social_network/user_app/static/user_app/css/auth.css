@@ -1,0 +1,94 @@
+@font-face {
+    font-family: 'GTWalsheimPro';
+    src: url('../../fonts/GTWalsheimPro-Regular.woff');
+    font-style: normal;
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'GTWalsheimPro';
+    src: url('../../fonts/GTWalsheimPro-Bold.woff');
+    font-style: normal;
+    font-weight: 200;
+}
+
+body{
+    background-color: #FAF8FF;
+    font-family: 'GTWalsheimPro';
+    font-weight: 100;
+}
+
+header{
+    height: 8.1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+}
+
+.auth_image{
+    display: flex;
+    width: 35vw;
+    z-index: 1;
+
+}
+
+.content{
+    height: 91.9vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 25vw;
+    padding-right: 17vw;
+}
+
+.logo{
+    width: 7.6vw;
+}
+
+.form_div{
+    box-sizing: border-box;
+    display: flex;
+    position: absolute;
+    width: 23.3vw;
+    height: 51vh;
+    z-index: 2;
+    border-radius: 20px;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    padding: 2.5vw;
+    background-color: #ffffff;
+}
+
+.form{
+    height: 21vh;
+}
+
+.nav_button{
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+}
+
+
+.create_button{
+    width: 100%;
+    height: 4.8vh;
+    border-radius: 10vw;
+    outline: none;
+    box-shadow: none;
+    background-color: #543C52;
+    color: #ffffff;
+    font-family: 'GTWalsheimPro';
+    font-weight: 100;
+
+}
+
+.selected_button{
+    font-weight: 200;
+    border-bottom: 0.3vh solid #543C52;
+    font-family: 'GTWalsheimPro';
+    font-weight: 200;
+}

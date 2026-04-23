@@ -1,0 +1,27 @@
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <link rel = 'stylesheet' href = '{% static "user_app/css/auth.css"%}'>
+    <title></title>
+</head>
+<body>
+    <header>
+        <img class = 'logo' src = "{% static 'images/logo_image.png' %}">
+    </header>
+    <div class = "content">
+        <div class = 'form_div'>
+            <div class = 'navigation'>
+                <button class = 'nav_button' id = 'register'>Реєстрація</button>
+                <button class = 'nav_button' id = 'auth'>Авторизація</button>
+            </div>
+            <span class = 'text'>Приєднуйся до World IT</span>
+            <div class = 'form'></div>
+            <button class = 'create_button'>Створити акаунт</button>
+        </div>
+        <img class = 'auth_image' src = "{% static 'images/auth_image.png' %}">
+    </div>
+    <script src = '{% static "user_app/js/auth.js" %}'></script>
+</body>
+</html>
