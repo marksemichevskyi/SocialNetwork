@@ -125,3 +125,10 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'user_app.User'
+
+
+LOGIN_REDIRECT_URL = 'main/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']

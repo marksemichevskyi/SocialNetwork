@@ -8,56 +8,58 @@
     {% block title %}<title>Document</title>{% endblock %}
 </head>
 <body>
-    <div class="header">
-        <div class = "logo">
-            <img src = "{% static 'images/logo_image.png' %}">
-        </div>
-        <div class = "buttons">
-             <div class = "page_buttons base_text_color">
-                <a class = "page_text_button selected_button" href = '/main/'>
-                    <img class = 'image' src = "{% static 'images/main_page_icon.png' %}">
-                    <span class = 'text' >Головна</span>
-                    
-                </a> 
-                <a class = "page_text_button" href = '/post/'>
-                    <img class = "image" src = "{% static 'images/post_page_icon.png' %}">
-                    <span class = 'text'>Мої публікації</span>  
-                </a>
-                <a class = "page_text_button" href = '/friends/'>
-                    <img class = 'image' src = "{% static 'images/friends_page_icon.png' %}">
-                    <span class = 'text' >Друзі</span>
-                </a>
-                <a class = "page_text_button" href = '/chat/'>
-                    <img class = 'image' src = "{% static 'images/chat_page_icon.png' %}">
-                    <span class = 'text'>Чати</span>
-                </a>
+    <div class = 'screen'>
+        <div class="header">
+            <div class = "logo">
+                <img src = "{% static 'images/logo_image.png' %}">
+            </div>
+            <div class = "buttons">
+                <div class = "page_buttons base_text_color">
+                    <a class = "page_text_button selected_button" href = '/main/'>
+                        <img class = 'image' src = "{% static 'images/main_page_icon.png' %}">
+                        <span class = 'text' >Головна</span>
+                        
+                    </a> 
+                    <a class = "page_text_button" href = '/post/'>
+                        <img class = "image" src = "{% static 'images/post_page_icon.png' %}">
+                        <span class = 'text'>Мої публікації</span>  
+                    </a>
+                    <a class = "page_text_button" href = '/friends/'>
+                        <img class = 'image' src = "{% static 'images/friends_page_icon.png' %}">
+                        <span class = 'text' >Друзі</span>
+                    </a>
+                    <a class = "page_text_button" href = '/chat/'>
+                        <img class = 'image' src = "{% static 'images/chat_page_icon.png' %}">
+                        <span class = 'text'>Чати</span>
+                    </a>
 
-                <a class = "page_text_button" href = '/user/settings/'>
-                    <img class="image" src = "{% static 'images/settings_page_icon.png' %}">
-                    <span class = 'text' >Налаштування</span>
-                </a>
-               
-             </div>
+                    <a class = "page_text_button" href = '/user/settings/'>
+                        <img class="image" src = "{% static 'images/settings_page_icon.png' %}">
+                        <span class = 'text' >Налаштування</span>
+                    </a>
+                
+                </div>
 
-            <button class = 'exit_button'>
-                <img src = "{% static 'images/exit_button_normal.png' %}">
-            </button>
+                <button class = 'exit_button'>
+                    <img src = "{% static 'images/exit_button_normal.png' %}">
+                </button>
+            </div>
         </div>
-    </div>
-    
-    <div class = 'body_div'>
-        <div class="side_panel">
-        {% block side_panel_content%}
-        {% endblock %}
-        </div>
-
-        <div class = 'content_div'>
-            {% block content%}
+        
+        <div class = 'body_div'>
+            <div class="side_panel">
+            {% block side_panel_content%}
             {% endblock %}
-    </div>
-    {% block scripts%}
-    {% endblock %}
-     <script src = '{% static "js/base.js" %}'></script>
+            </div>
+
+            <div class = 'content_div'>
+                {% block content%}
+                {% endblock %}
+        </div>
+        {% block scripts%}
+        {% endblock %}
+        <script src = '{% static "js/base.js" %}'></script>
+        </div>
     </div>
 </body>
 </html>

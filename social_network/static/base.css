@@ -12,21 +12,33 @@
     font-weight: 200;
 }
 body{
-    box-sizing: border-box;
-    max-width: 1440px;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
     font-family: 'GTWalsheimPro';
     font-weight: 100;
     background-color: #FAF8FF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+}
+
+.screen{
+    box-sizing: border-box;
+    width: clamp(1px, 100vw, 1440px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1.8vh;
 }
 
 .body_div{
-    box-sizing: border-box;
     display: flex; 
     flex-direction: row;  
-    justify-content: center;
+    padding-left: 7vw;
+    width: 100%;
+    gap: 0.6vw;;
 }
 
 .content_div{
@@ -42,16 +54,16 @@ body{
     justify-content: space-between;
     padding-left: 4%;
     padding-right: 4%;
-    padding-top: 1.25%;
-    padding-bottom: 1.25%;
+
     background-color:#ffffff;
 }
 
 .buttons{
-    width: auto;
-    height: 100%;
     display: flex;
     flex-direction: row;
+    max-width: 775px;
+    height: 100%;
+    gap: 1.5vw;
 }
 
 .logo{
@@ -64,16 +76,17 @@ body{
 .page_buttons{
     display: flex;
     flex-direction: row;
-    gap: 1.7vw;
+    gap: 1vw;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
 }
 
 .side_panel{
-    width: 24vw;
+    width: 20vw;
     height: 74vh;
     display: flex;
     display: flex;
     flex-direction: column;
-    padding-left: 4%;
 }
 
 .page_text_button{
@@ -83,11 +96,14 @@ body{
     gap : 0.5vw;
     text-decoration: none;
     color: black;
+    border-radius: 3px;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
 }
 
 .image{
     display: flex;
-    width: 1vw;
+    width: 1.1vw;
 }
 
 .text{
@@ -99,6 +115,15 @@ body{
 }
 
 .exit_button{
+    padding: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+}
+
+.exit_button img{
+    width: 6vw;
 }
 
 .selected_button{
