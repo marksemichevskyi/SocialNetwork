@@ -35,7 +35,7 @@ body{
 }
 
 .header{
-    width: 100%;
+    width: 100vw;
     height: clamp(1px, 8.1vh, 88px);
     display: flex;
     justify-content: center;
@@ -174,4 +174,21 @@ form p{
 .error_container{
     font-size: clamp(1px, 1rem, 22px);
     color: rgb(255, 59, 59);
+}
+
+.confirm_div{
+   display: flex;
+   flex-direction: row;
+}
+
+.large_text{
+    font-weight: 200;
+    color: #000000; 
+}
+
+.exit_button{
+   border: none;
+    outline: none;
+    box-shadow: none;
+    background: none; 
 }

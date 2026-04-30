@@ -30,11 +30,13 @@ class RegisterForm(forms.ModelForm):
         
     def clean(self):
         data = super().clean()
-        
         pass1 = data.get('password')
         pass2 = data.get('confirm_password')
+        password_length = len(pass1)
         if pass1 and pass2 and pass1 != pass2:
            raise forms.ValidationError(message = 'Паролі не співпадають') 
+        elif pass1 and pass2 and password_length < 6:
+            raise forms.ValidationError(message = 'Пароль має бути довше 6 символів') 
         return data
             
     def clean_email(self):
@@ -85,4 +87,22 @@ class ConfirmEmail(forms.Form):
     digit4 = forms.CharField(widget= forms.NumberInput(), max_length=1)
     digit5 = forms.CharField(widget= forms.NumberInput(), max_length=1)
     digit6 = forms.CharField(widget= forms.NumberInput(), max_length=1)
+    
+    def clean(self):
+        digit1 = self.cleaned_data.get('digit1')
+        digit2 = self.cleaned_data.get('digit2')
+        digit3 = self.cleaned_data.get('digit3')
+        digit4 = self.cleaned_data.get('digit4')
+        digit5 = self.cleaned_data.get('digit5')
+        digit6 = self.cleaned_data.get('digit6')
+        list_numbers = ["0","1","2","3","4","5","6","7","8","9"]
+        list_digits = [digit1, digit2, digit3, digit4, digit5, digit6]
+        
+        
+        for digit in list_digits:
+            if not digit:
+                raise forms.ValidationError(message = 'Усі віконця мають бути заповненими')
+            elif digit not in list_numbers:
+                raise forms.ValidationError(message = 'Ви ввели не число ')
+        return self.cleaned_data
     

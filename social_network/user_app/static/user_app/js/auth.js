@@ -3,16 +3,31 @@ function getCSRFToken(){
     return meta.content
 }
 
+const navBar = document.querySelector(".navigation")
+
 const registerErrorContainer = document.querySelector("#register_error")
 const loginErrorContainer = document.querySelector("#login_error")
+const confirmErrorContainer = document.querySelector("#confirm_error")
 
 const buttonRegister = document.querySelector("#register_button")
 const buttonLogin = document.querySelector("#login_button")
+const buttonConfirm = document.querySelector("#confirm_button")
+const buttonExit = document.querySelector("#back_to_register")
+
 
 const containerRegister = document.querySelector("#register")
 const containerLogin = document.querySelector("#login")
+const containerConfirm = document.querySelector("#confirm")
 
- buttonRegister.addEventListener('click', ()=>{
+buttonExit.addEventListener('click', ()=>{
+    containerConfirm.classList.add("disable")
+    containerRegister.classList.remove("disable") 
+    buttonRegister.classList.add("selected_button") 
+    navBar.classList.remove('disable')
+})
+
+
+buttonRegister.addEventListener('click', ()=>{
     containerLogin.classList.add("disable")
     containerRegister.classList.remove("disable") 
     buttonLogin.classList.remove("selected_button")
@@ -35,6 +50,9 @@ console.log(getCSRFToken())
 
 const formLogin = document.getElementById('form_login')
 const formRegister = document.getElementById('form_register')
+const formConfirm = document.querySelector("#confirm_email")
+
+
 formRegister.addEventListener('submit', async function(event){
     event.preventDefault()
     const formData = new FormData(event.target)
@@ -50,9 +68,9 @@ formRegister.addEventListener('submit', async function(event){
     const data = await response.json()
     if (data.success == true) {
         formRegister.reset()
+        navBar.classList.add('disable')
         containerRegister.classList.add("disable")
-        containerLogin.classList.remove("disable")
-        buttonLogin.classList.add("selected_button") 
+        containerConfirm.classList.remove("disable")
         buttonRegister.classList.remove("selected_button")
     } else {
         registerErrorContainer.innerHTML = ''
@@ -90,6 +108,40 @@ formLogin.addEventListener('submit', async function(event){
                 const errorElement = document.createElement('p')
                 errorElement.textContent = error.message
                 loginErrorContainer.append(errorElement)
+            });
+        }
+    }
+})
+
+
+formConfirm.addEventListener('submit', async function(event){
+    event.preventDefault()
+    const formData = new FormData(event.target)
+
+    const response = await fetch(formConfirm.action,{
+        method: "POST",
+        headers:{
+            'X-CSRFToken': getCSRFToken(),
+            'X-Requested-With': "XMLHttpRequest",
+        },
+        body: formData
+    })
+    const data = await response.json()
+    if (data.success == true) {
+        formConfirm.reset()
+        containerConfirm.classList.add("disable")
+        containerLogin.classList.remove("disable")
+        navBar.classList.remove('disable')
+        buttonLogin.classList.add("selected_button") 
+        buttonRegister.classList.remove("selected_button")
+    } else {
+        confirmErrorContainer.innerHTML = ''
+        for (const key in data.errors) {
+            const errors = data.errors[key];
+            errors.forEach(error => {
+                const errorElement = document.createElement('p')
+                errorElement.textContent = error.message
+                confirmErrorContainer.append(errorElement)
             });
         }
     }

@@ -129,6 +129,14 @@ AUTH_USER_MODEL = 'user_app.User'
 
 LOGIN_REDIRECT_URL = 'main/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'worldit.socialnetwork1111@gmail.com' 
+EMAIL_HOST_PASSWORD = 'bmhd jigr omcq fgjp'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+
