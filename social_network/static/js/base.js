@@ -11,7 +11,9 @@ buttons.forEach(button =>{
         }
 })
 
-exitButton.addEventListener('click', ()=> {
-    window.location.href = '/user/auth/'
+// exitButton.addEventListener('click', ()=> {
+//     sessionStorage.clear()
+//     localStorage.clear()
+//     window.location.href = '../user/auth/'
     
-})
+// })

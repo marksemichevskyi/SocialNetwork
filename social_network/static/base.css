@@ -135,3 +135,11 @@ body{
 .selected_button{
     background-color: #E9E5EE;
 }
+
+.logout_form{
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+}
+

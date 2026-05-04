@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from .forms import *
+from .models import *
 from django.http import JsonResponse
 import random
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.core.mail import send_mail
 # Create your views here.
 class UserView(TemplateView):
@@ -59,21 +60,26 @@ class ConfirmEmailView(View):
     def post(self, request, *args, **kwargs):
         form = ConfirmEmail(request.POST)
         if form.is_valid():
-            digit1 = form.cleaned_data.get('confirm1')
-            digit2 = form.cleaned_data.get('confirm2')
-            digit3 = form.cleaned_data.get('confirm3')
-            digit4 = form.cleaned_data.get('confirm4')
-            digit5 = form.cleaned_data.get('confirm5')
-            digit6 = form.cleaned_data.get('confirm6')
+            digit1 = form.cleaned_data.get('digit1')
+            digit2 = form.cleaned_data.get('digit2')
+            digit3 = form.cleaned_data.get('digit3')
+            digit4 = form.cleaned_data.get('digit4')
+            digit5 = form.cleaned_data.get('digit5')
+            digit6 = form.cleaned_data.get('digit6')
             
             confirm_code = request.session.get('confirm_code')
             user_code = f"{digit1}{digit2}{digit3}{digit4}{digit5}{digit6}"
-            if str(confirm_code) == user_code:
-                register_data = request.session.get('register_data')
+            
+            if str(confirm_code) != user_code:
+                return JsonResponse({
+                    'success': False,
+                    'errors': form.errors.get_json_data()
+                })
+            register_data = request.session.get('register_data')
             user = User.objects.create(
                 email = register_data["email"]
             )
-            user.set_password(register_data["password1"])
+            user.set_password(register_data["password"])
             user.save()            
             return JsonResponse(data = {
                 'success': True
@@ -82,3 +88,9 @@ class ConfirmEmailView(View):
                 'success': False,
                 "errors": form.errors.get_json_data()
         })
+        
+        
+class LogoutView(View):
+    def post(self, request):
+        logout(request)
+        return redirect("auth")

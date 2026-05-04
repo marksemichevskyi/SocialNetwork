@@ -179,16 +179,41 @@ form p{
 .confirm_div{
    display: flex;
    flex-direction: row;
+   justify-content: space-between;
 }
 
 .large_text{
+    font-size: clamp(1px, 1.6rem, 34px);
     font-weight: 200;
     color: #000000; 
 }
 
 .exit_button{
-   border: none;
+    border: none;
     outline: none;
     box-shadow: none;
     background: none; 
+}
+
+.small_text{
+    text-align: center;
+    font-size: clamp(1px, 1rem, 16px);
+    
+}
+
+.confirm_div p{
+     width: clamp(1px, 2.6vw, 50px);
+     height: clamp(1px, 4vh, 45px);
+     display: flex;
+     align-items: center;
+}
+
+.confirm_label{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(1px, 0.8rem, 16px);
+    color: #070A1C;
+    margin: 0;
+    font-weight: 100;
 }

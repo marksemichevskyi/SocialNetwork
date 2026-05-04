@@ -81,12 +81,12 @@ class AuthForm(AuthenticationForm):
         return self.cleaned_data
     
 class ConfirmEmail(forms.Form):
-    digit1 = forms.CharField(widget= forms.NumberInput(), max_length=1)
-    digit2 = forms.CharField(widget= forms.NumberInput(), max_length=1)
-    digit3 = forms.CharField(widget= forms.NumberInput(), max_length=1)
-    digit4 = forms.CharField(widget= forms.NumberInput(), max_length=1)
-    digit5 = forms.CharField(widget= forms.NumberInput(), max_length=1)
-    digit6 = forms.CharField(widget= forms.NumberInput(), max_length=1)
+    digit1 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
+    digit2 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
+    digit3 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
+    digit4 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
+    digit5 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
+    digit6 = forms.CharField(widget= forms.TextInput(attrs= {"placeholder":'_'}), max_length=1, label = '')
     
     def clean(self):
         digit1 = self.cleaned_data.get('digit1')

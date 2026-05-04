@@ -3,6 +3,8 @@ function getCSRFToken(){
     return meta.content
 }
 
+const inputs = document.querySelectorAll('.confirm_div p input')
+
 const navBar = document.querySelector(".navigation")
 
 const registerErrorContainer = document.querySelector("#register_error")
@@ -18,6 +20,29 @@ const buttonExit = document.querySelector("#back_to_register")
 const containerRegister = document.querySelector("#register")
 const containerLogin = document.querySelector("#login")
 const containerConfirm = document.querySelector("#confirm")
+
+
+inputs.forEach((input, index) =>{
+    input.addEventListener('input', (element) =>{
+        if(element.target.value.length === 1){
+            if(index < inputs.length-1) {
+                inputs[index +1].focus()
+            }
+        }
+    })
+
+    input.addEventListener('keydown', (element) =>{
+        if (element.key === 'Backspace' && !input.value && index > 0){
+            inputs[index -1].focus()
+        }
+    })
+
+})
+
+
+
+
+
 
 buttonExit.addEventListener('click', ()=>{
     containerConfirm.classList.add("disable")
