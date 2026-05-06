@@ -3,6 +3,10 @@ function getCSRFToken(){
     return meta.content
 }
 
+const popUp = document.querySelector('.pop-up')
+const formUsername = document.querySelector('#form_username')
+const usernameErrorContainer = document.querySelector('#username_error_container')
+
 const toCreationButton = document.querySelector("#to_creation")
 
 const postContainer = document.querySelector(".pop-up")
@@ -24,13 +28,25 @@ toCreationButton.addEventListener('click', () => {
     postContainer.classList.remove("disable")
 })
 
+document.addEventListener("DOMContentLoaded", async () => {
+    const checkResponse = await fetch("set_username/", {
+        method: "GET",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    });
 
+    const checkData = await checkResponse.json();
 
-formPost.addEventListener('submit', async function(event){
-    console.log('it works')
+    if (checkData.needs_profile) {
+        popUp.classList.remove('disable')
+    }
+
+    formUsername.addEventListener('submit', async function(event){
     event.preventDefault()
     const formData = new FormData(event.target)
-    const response = await fetch(formPost.action,{
+
+    const response = await fetch(formUsername.action,{
         method: "POST",
         headers:{
             'X-CSRFToken': getCSRFToken(),
@@ -40,16 +56,20 @@ formPost.addEventListener('submit', async function(event){
     })
     const data = await response.json()
     if (data.success == true) {
-        formPost.reset()
+        formUsername.reset()
+        popUp.classList.add('disable')
     } else {
-        postErrorContainer.innerHTML = ''
+        usernameErrorContainer.innerHTML = ''
         for (const key in data.errors) {
             const errors = data.errors[key];
             errors.forEach(error => {
                 const errorElement = document.createElement('p')
                 errorElement.textContent = error.message
-                postErrorContainer.append(errorElement)
+                usernameErrorContainer.append(errorElement)
             });
         }
     }
 })
+});
+
+

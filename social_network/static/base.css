@@ -45,10 +45,17 @@ body{
 
 .content_div{
     display: flex; 
-    width: clamp(1px, 78vw, 1060px);
+    width: clamp(1px, 100%, 1060px);
     height: clamp(1px, 90vh, 900px);
     overflow-y: scroll;
     right: 0;
+}
+.content{
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
 }
 
 .header{
@@ -143,3 +150,76 @@ body{
     align-items: center;
 }
 
+.pop-up{
+    position: absolute;
+    display: flex;
+    margin: 0;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #00000070;
+    align-items: center;
+    justify-content: center;
+}
+.form_div{
+    box-sizing: border-box;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    border-width: 0.2vh;
+    border-radius: 20px;
+    border-style: solid;
+    border-color:#CDCED2 ;
+    background-color:#ffffff ;
+    margin: 0;
+    gap: 3vh;
+}
+
+input{
+    width: 100%;
+    height: clamp(1px, 4.8vh, 42px);
+    border: solid;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: #CDCED2;
+    padding-left: clamp(1px, 1vw, 19.2px);
+}
+
+
+.style_button{
+    border-radius: 10vw;
+    outline: none;
+    box-shadow: none;
+    background-color: #543C52;
+    color: #ffffff;
+    font-family: 'GTWalsheimPro';
+    font-weight: 100;
+}
+h1{
+    margin: 0;
+    font-size: clamp(1px, 1.6rem, 34px);
+    font-weight: 200;
+    color: #000000; 
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1vh;
+    margin: 0;
+}
+
+p{
+    margin: 0;
+}
+
+.error_container{
+    font-size: clamp(1px, 1rem, 22px);
+    color: rgb(255, 59, 59);
+}
+
+.disable{
+    display: none !important;
+}

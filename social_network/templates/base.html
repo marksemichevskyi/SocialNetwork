@@ -56,13 +56,16 @@
             </div>
 
             <div class = 'content_div'>
+                <div class = 'content'>
                 {% block content%}
                 {% endblock %}
-        </div>
+                </div>
+        
+    </div>
+    </div>
         {% block scripts%}
         {% endblock %}
         <script src = '{% static "js/base.js" %}'></script>
-        </div>
     </div>
 </body>
 </html>

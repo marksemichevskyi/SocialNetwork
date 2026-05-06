@@ -41,9 +41,6 @@ inputs.forEach((input, index) =>{
 
 
 
-
-
-
 buttonExit.addEventListener('click', ()=>{
     containerConfirm.classList.add("disable")
     containerRegister.classList.remove("disable") 

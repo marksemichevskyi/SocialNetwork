@@ -23,6 +23,7 @@ class AuthView(TemplateView):
 class RegisterView(View):
     def post(self, request):
         form = RegisterForm(request.POST)
+
         if form.is_valid():  
             confirm_code = random.randint(100000, 999999)
             request.session['confirm_code'] = confirm_code
