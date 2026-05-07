@@ -35,7 +35,8 @@ class PostForm(forms.ModelForm):
         label = 'Зображення',
         required= False,
         widget= MultipleFilesInput(
-            attrs={'multiple': True, 'accept': 'images/*'}
+            attrs={'multiple': True, 'accept': 'images/*', 'secret_key' : forms.HiddenInput()}
+            
         )
     )
 

@@ -9,8 +9,22 @@ const postContainer = document.querySelector(".pop-up")
 const formPost = document.querySelector("#form_post")
 const postErrorContainer = document.querySelector('#post_error')
 
+
 const btnAddLink = document.querySelector('#add_link')
+const imageInput = document.querySelector('#form_post input[type = "file"]')
 const listLinks = document.querySelector('#links_list')
+
+
+const btnAddImage = document.querySelector('#image_button')
+
+
+btnAddImage.addEventListener('click', ()=> {
+    imageInput.click()
+})
+
+
+
+
 
 btnAddLink.addEventListener('click', () => {
 const newLink = document.createElement('input')

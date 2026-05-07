@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, View
 from .forms import *
 from .models import *
+from user_app.views import *
 from django.http import JsonResponse
 # Create your views here.
 class MainView(TemplateView):
@@ -9,6 +10,7 @@ class MainView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form_username"] = UsernameForm()
+        context['form_post'] = PostForm()
         return context 
     
 class UsernameView(View):

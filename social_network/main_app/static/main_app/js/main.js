@@ -3,18 +3,27 @@ function getCSRFToken(){
     return meta.content
 }
 
-const popUp = document.querySelector('.pop-up')
+const popUp = document.querySelector('#username_pop-up')
 const formUsername = document.querySelector('#form_username')
 const usernameErrorContainer = document.querySelector('#username_error_container')
 
 const toCreationButton = document.querySelector("#to_creation")
 
-const postContainer = document.querySelector(".pop-up")
+const postContainer = document.querySelector("#post_form_pop-up")
 const formPost = document.querySelector("#form_post")
 const postErrorContainer = document.querySelector('#post_error')
 
 const btnAddLink = document.querySelector('#add_link')
 const listLinks = document.querySelector('#links_list')
+
+const btnAddImage = document.querySelector('#image_button')
+const imageInput = document.querySelector('#form_post input[type = "file"]')
+
+btnAddImage.addEventListener('click', ()=> {
+    imageInput.click()
+})
+
+
 
 btnAddLink.addEventListener('click', () => {
 const newLink = document.createElement('input')

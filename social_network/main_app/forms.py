@@ -1,5 +1,6 @@
 from django import forms
 from user_app.models import *
+from post_app.forms import *
 
 class UsernameForm(forms.ModelForm):
 

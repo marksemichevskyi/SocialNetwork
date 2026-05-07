@@ -1,3 +1,6 @@
+.side_panel{
+    gap: 0.5vh;
+}
 
 .user_profile_div{
     box-sizing: border-box;
@@ -19,13 +22,13 @@
     flex-direction: row-reverse;
     justify-content: space-between; 
     align-items: center; 
+    height: 5vh;
 }
 
 
 
 .profile_div{
     width: 100%;
-    height: 28vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -81,45 +84,3 @@
 
 }
 
-.create_post_pannel{
-    box-sizing: border-box;
-    width: 100%;
-    height: clamp(1px, 16vh, 120px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.6%;
-    border-width: 0.2vh;
-    border-radius: 1vh;
-    border-style: solid;
-    border-color:#CDCED2 ;
-    background-color:#ffffff ;
-}
-
-#post_text{
-    width: 100%;
-    border: 0;
-}
-.pannel_buttons{
-    width: 100%;
-    height: clamp(1px, 5vh, 40px);
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
-}
-
-#to_creation{
-    width: 21%;
-    height: 100%;
-}
-
-#form_post_div{
-    width: clamp(1px, 40.2vw, 773px);
-    height: clamp(1px, 88vh, 950px);
-    padding: 2%;
-}
-
-label{
-    display: flex;
-    flex-direction: column;
-}
