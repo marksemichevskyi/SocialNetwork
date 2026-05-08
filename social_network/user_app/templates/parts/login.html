@@ -1,0 +1,6 @@
+<span class = 'text'>Раді тебе знову бачити!</span>
+<form id = 'form_login' method = 'post' action = '{% url "login" %}'>
+    {{ form_login.as_p }}
+    <div class = 'error_container' id = 'login_error'></div>
+    <button class = 'create_button'>Увійти</button>
+</form>
