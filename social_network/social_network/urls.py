@@ -18,7 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import *
 urlpatterns = [
+    path('', home_redirect),
     path('admin/', admin.site.urls),
     path('friends/', include('friends_app.urls')),
     path('main/', include('main_app.urls')),

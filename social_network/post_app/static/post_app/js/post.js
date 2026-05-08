@@ -18,9 +18,13 @@ const listLinks = document.querySelector('#links_list')
 const btnAddImage = document.querySelector('#image_button')
 
 
-btnAddImage.addEventListener('click', ()=> {
-    imageInput.click()
-})
+btnAddImage.addEventListener('click', () => {
+    if (imageInput) {
+        imageInput.click();
+    } else {
+        console.error("Помилка: imageInput не знайдено в DOM!");
+    }
+});
 
 
 
@@ -41,9 +45,10 @@ toCreationButton.addEventListener('click', () => {
 
 
 formPost.addEventListener('submit', async function(event){
-    console.log('it works')
+
     event.preventDefault()
     const formData = new FormData(event.target)
+
     const response = await fetch(formPost.action,{
         method: "POST",
         headers:{
@@ -55,6 +60,7 @@ formPost.addEventListener('submit', async function(event){
     const data = await response.json()
     if (data.success == true) {
         formPost.reset()
+        
     } else {
         postErrorContainer.innerHTML = ''
         for (const key in data.errors) {
@@ -67,3 +73,15 @@ formPost.addEventListener('submit', async function(event){
         }
     }
 })
+
+function renderErrors(errors) {
+    postContainer.innerHTML = '';
+    for (const key in errors) {
+        errors[key].forEach(error => {
+            const errorElement = document.createElement('p');
+            errorElement.style.color = 'red';
+            errorElement.textContent = typeof error === 'string' ? error : error.message;
+            postErrorContainer.append(errorElement);
+        })
+    }
+}

@@ -14,23 +14,24 @@ class PostView(LoginRequiredMixin, TemplateView):
         context['form_post'] = PostForm()
         return context 
 
-class CreatePostView(View):
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if self.request.method == "POST":
-            kwargs['links'] = self.request.POST.getlist('links')
-            kwargs['images'] = self.request.POST.getlist('images')
-        return kwargs
-    
+class CreatePostView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        form = PostForm(request.POST)
+        
+        links_data = request.POST.getlist('link')
+        images_data = request.FILES.getlist('images')
+
+        form = PostForm(
+            data=request.POST,
+            files=request.FILES,
+            links=links_data,
+            images=images_data
+        )
+
         if form.is_valid():
-            form.save(request.user)
-            return JsonResponse(data = {
-                'success': True,
-            })
+            form.save(author=request.user)
+            return JsonResponse({'success': True})
             
-        return JsonResponse(data = {
-            'success': False,
-            "errors": form.errors.get_json_data()
-        })
+        return JsonResponse({
+            'success': False, 
+            'errors': form.errors.get_json_data()
+        }, status=400)
