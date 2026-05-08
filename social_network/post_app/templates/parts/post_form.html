@@ -3,7 +3,19 @@
 <div class = 'form_div' id = 'form_post_div'>
     <h1>Створити публікацію </h1>
     <form id = 'form_post' method = 'post' action= '{% url "create_post" %}'>
-        {{form_post.as_p}}
+        
+    {% for field in form_post %}
+        <p id="row_{{ field.name }}" 
+           class="form-group {% if field.name == 'images' %}disable{% endif %}">
+            
+            {{ field.label_tag }}
+            {{ field }}
+            
+            {% if field.errors %}
+                <span class="error">{{ field.errors }}</span>
+            {% endif %}
+        </p>
+    {% endfor %}
         <div id = 'links_list'>
             <label for="link_1">Посилання:</label>
             <input type="url" name="link" placeholder="Посилання" id = 'link_1'>
@@ -13,6 +25,10 @@
             <button type="button" id = 'add_link' id = 'image_button'>
                 <img src = "{% static 'images/plus_button.png' %}">
             </button>
+
+            <div class="preview-container">
+                <img id="preview" style="display:none; max-width:200px;">
+            </div>
         
             <div class = 'post_forms_buttons'>
 

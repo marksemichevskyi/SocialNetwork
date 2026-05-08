@@ -28,9 +28,9 @@ class PostForm(forms.ModelForm):
     )
         
     images = MultipleFilesField(
-        label='Зображення',
         required=False,
-        widget=forms.HiddenInput(attrs={'multiple': True, 'accept': 'image/*'})
+        label = '',
+        widget=MultipleFilesInput(attrs={'multiple': True, 'accept': 'image/*', 'id': 'image-input'})
     )
 
     class Meta:
@@ -40,6 +40,11 @@ class PostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'Напишіть назву публікації'}),
             'topic': forms.TextInput(attrs={'placeholder': 'Напишіть тему публікації'}),
             'content': forms.Textarea(attrs={'placeholder': 'Введіть текст публікації'}),
+        }
+        labels = {
+            'title': 'Назва публікації',
+            'topic': 'Тема публікації',
+            'content': 'Зміст публікації'
         }
 
     def __init__(self, links=None, images=None, *args, **kwargs):

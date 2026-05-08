@@ -85,3 +85,71 @@ function renderErrors(errors) {
         })
     }
 }
+
+const input = document.getElementById('image-input');
+const preview = document.getElementById('preview');
+
+let compressedFile = null;
+
+input.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+        img.src = event.target.result;
+    };
+
+    img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const MAX_WIDTH = 800;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Превью
+        preview.src = canvas.toDataURL('image/jpeg', 0.7);
+        preview.style.display = 'block';
+
+        // Сжатый файл
+        const blob = await new Promise(resolve =>
+            canvas.toBlob(resolve, 'image/jpeg', 0.7)
+        );
+
+        compressedFile = new File(
+            [blob],
+            file.name,
+            { type: 'image/jpeg' }
+        );
+    };
+
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('form').addEventListener('submit', (e) => {
+    if (!compressedFile) return;
+
+    e.preventDefault();
+
+    const dt = new DataTransfer();
+    dt.items.add(compressedFile);
+
+    input.files = dt.files;
+
+    e.target.submit();
+});
