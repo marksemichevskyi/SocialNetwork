@@ -1,30 +1,50 @@
-{% load static %}
-<div class="add_tag">
-    <div class="tag_close"></div>
+<form method="POST" action="{% url 'add_tag' %}" class="tag_form">
 
-    <div class="tag_title">
-        Dodaty hashtag
-    </div>
+    {% csrf_token %}
 
-    <div class="tag_field">
-        <div class="tag_label">
-            Nazva
+    <div class="add_tag">
+
+        <div class="tag_close">
+            ×
         </div>
 
-        <input
-            type="placeholder"
-            class="tag_input"
-            placeholder="#">
+        <div class="tag_title">
+            Додати хештег
+        </div>
+
+        <div class="tag_field">
+
+            <div class="tag_label">
+                Назва
+            </div>
+
+            <input
+                type="text"
+                name="name"
+                class="tag_input"
+                placeholder="#"
+            >
+
+        </div>
+
+        <div class="tag_buttons">
+
+            <button
+                type="button"
+                class="tag_button_close"
+            >
+                Скасувати
+            </button>
+
+            <button
+                type="submit"
+                class="tag_button_save"
+            >
+                Зберегти
+            </button>
+
+        </div>
+
     </div>
 
-    <div class="tag_buttons">
-        <button class="tag_button_close">
-            Skasuvaty
-        </button>
-
-        <button class="tag_button_save">
-            Sberegty
-        </button>
-    </div>
-</div>
-
+</form>

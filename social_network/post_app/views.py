@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, FormView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
+from .forms import HashtagForm
+from .models import Hashtag
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 
@@ -35,3 +37,23 @@ class CreatePostView(LoginRequiredMixin, View):
             'success': False, 
             'errors': form.errors.get_json_data()
         }, status=400)
+
+
+class AddTagView(TemplateView):
+    template_name = "post.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["tag_form"] = HashtagForm()
+        context["hashtags"] = Hashtag.objects.all()
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        tag_form = HashtagForm(request.POST)
+
+        if tag_form.is_valid():
+            tag_form.save()
+
+        return redirect("add_tag")

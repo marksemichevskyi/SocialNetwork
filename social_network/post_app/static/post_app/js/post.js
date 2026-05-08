@@ -153,3 +153,61 @@ document.getElementById('form').addEventListener('submit', (e) => {
 
     e.target.submit();
 });
+
+const tagPopup = document.querySelector(".tag_pop_up");
+const tagClose = document.querySelector(".tag_close");
+const tagCancel = document.querySelector(".tag_button_close");
+const tagForm = document.querySelector(".tag_form");
+const tagInput = document.querySelector(".tag_input");
+
+function openTagPopup() {
+    tagPopup.classList.remove("disable");
+}
+
+function closeTagPopup() {
+    tagPopup.classList.add("disable");
+}
+
+function normalizeHashtags(value) {
+    value = value.trimStart();
+
+    if (value === "") {
+        return "";
+    }
+
+    if (!value.startsWith("#")) {
+        value = "#" + value;
+    }
+
+    value = value.replace(/\s+/g, " #");
+
+    value = value
+        .split(" ")
+        .filter(tag => tag !== "#")
+        .join(" ");
+
+    return value;
+}
+
+if (tagClose) {
+    tagClose.addEventListener("click", closeTagPopup);
+}
+
+if (tagCancel) {
+    tagCancel.addEventListener("click", closeTagPopup);
+}
+
+if (tagInput && tagForm) {
+    tagInput.addEventListener("input", function () {
+        tagInput.value = normalizeHashtags(tagInput.value);
+    });
+
+    tagForm.addEventListener("submit", function (e) {
+        tagInput.value = normalizeHashtags(tagInput.value);
+
+        if (tagInput.value === "" || tagInput.value === "#") {
+            e.preventDefault();
+            alert("Введіть хештег");
+        }
+    });
+}

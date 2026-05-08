@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, PostTag, PostLink, PostImage
+from .models import Post, PostTag, PostLink, PostImage, Hashtag
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -138,8 +138,35 @@ class PostForm(forms.ModelForm):
                 )
         return post
                 
-        
-        
-                    
-        
-        
+# тут будет форма для жесткого хештега
+
+
+class HashtagForm(forms.ModelForm):
+    class Meta:
+        model = Hashtag
+        fields = ["name"]
+
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "tag_input",
+                "placeholder": "#",
+                "autocomplete": "off",
+            })
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data["name"].strip()
+
+        parts = name.split("#")
+        tags = []
+
+        for part in parts:
+            part = part.strip()
+
+            if part:
+                tags.append("#" + part)
+
+        if not tags:
+            raise forms.ValidationError("Введіть хештег")
+
+        return " ".join(tags)
