@@ -1,86 +1,51 @@
-.post_tags_section {
-    margin-top: 16px;
-    width: 100%;
+.design_panel {
+    display: none;
+
+    margin-top: 15px;
+}
+
+.design_panel.active {
+    display: block;
 }
 
 .tag_form {
-    width: 100%;
+    
+
+    
+    
+    
+
+    
+
+    justify-content: center;
+    align-items: center;
+}
+
+.tag_form.active {
+    display: flex;
 }
 
 .add_tag {
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 12px;
+}
+
+.open_tag_form {
+    border-radius:10vw;
+    outline:none;
+    box-shadow:none;
+    border:none;
+    background-color: white;
+    width: 2.2vw;
+}
+
+.open_tag_form img {
     width: 100%;
-    max-width: 760px;
-    background: transparent;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 0;
-    position: static;
 }
 
-.tag_close {
-    font-size: 14px;
-    line-height: 1;
-    cursor: pointer;
-    color: #111;
-    margin-bottom: 6px;
-}
-
-.tag_title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111;
-    margin-bottom: 4px;
-}
-
-.tag_label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #111;
-    margin-bottom: 2px;
-}
-
-.tag_field {
-    margin-bottom: 4px;
-}
-
-.tag_input {
-    width: 220px;
-    height: 24px;
-    border: 1px solid #999;
-    border-radius: 2px;
-    padding: 2px 6px;
-    font-size: 14px;
-    outline: none;
-}
-
-.tag_buttons {
-    display: flex;
-    gap: 4px;
-}
-
-.tag_button_close,
-.tag_button_save {
-    height: 24px;
-    padding: 2px 8px;
-    border-radius: 2px;
-    font-size: 13px;
-    font-weight: 400;
-    cursor: pointer;
-}
-
-.tag_button_close {
-    background: #efefef;
-    border: 1px solid #777;
-    color: #111;
-}
-
-.tag_button_save {
-    background: #efefef;
-    border: 1px solid #777;
-    color: #111;
-}
-
-.tag_error {
-    font-size: 12px;
-    color: red;
+.disable {
+    display: none;
 }

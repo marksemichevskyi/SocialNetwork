@@ -29,8 +29,3 @@ class PostImage(models.Model):
     original = models.ImageField(upload_to= f'post_images/original_images')
     compressed = models.ImageField(upload_to=f'post_images/compressed_images' )
 
-class Hashtag(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name

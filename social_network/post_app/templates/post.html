@@ -41,15 +41,14 @@
 <div class="post_right_column">
 
     {% include 'parts/create_post_pannel.html' %}
-
-    <div class="post_tags_section">
-        {% include 'parts/add_tag.html' %}
-    </div>
-
+    
 </div>
 
 <div class="pop-up disable">
     {% include 'parts/post_form.html' %}
+    
+    {% include 'parts/add_tag.html' %}
+
 </div>
 
 {% endblock %}

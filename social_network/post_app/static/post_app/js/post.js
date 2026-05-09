@@ -6,12 +6,13 @@ function getCSRFToken(){
 const toCreationButton = document.querySelector("#to_creation")
 
 const postContainer = document.querySelector(".pop-up")
+
 const formPost = document.querySelector("#form_post")
 const postErrorContainer = document.querySelector('#post_error')
 
 
 const btnAddLink = document.querySelector('#add_link')
-const imageInput = document.querySelector('#form_post input[type = "file"]')
+const imageButton = document.querySelector('#form_post input[type = "file"]')
 const listLinks = document.querySelector('#links_list')
 
 
@@ -19,8 +20,8 @@ const btnAddImage = document.querySelector('#image_button')
 
 
 btnAddImage.addEventListener('click', () => {
-    if (imageInput) {
-        imageInput.click();
+    if (imageButton) {
+        imageButton.click();
     } else {
         console.error("Помилка: imageInput не знайдено в DOM!");
     }
@@ -38,28 +39,39 @@ newLink.placeholder = 'Посилання'
 listLinks.append(newLink)
 })
 
+
+
 toCreationButton.addEventListener('click', () => {
     postContainer.classList.remove("disable")
 })
 
 
 
-formPost.addEventListener('submit', async function(event){
-
+formPost.addEventListener('submit', async function(event) {
     event.preventDefault()
-    const formData = new FormData(event.target)
+    
+    const formData = new FormData(formPost)
+    formData.delete('images')
 
-    const response = await fetch(formPost.action,{
+    compressedFiles.forEach(file => {
+        if (file) {
+            formData.append('images[]', file);
+        }
+    })
+
+    const response = await fetch(formPost.action, {
         method: "POST",
-        headers:{
+        headers: {
             'X-CSRFToken': getCSRFToken(),
             'X-Requested-With': "XMLHttpRequest",
         },
         body: formData
-    })
+    });
     const data = await response.json()
     if (data.success == true) {
         formPost.reset()
+        compressedFiles = []
+        preview.innerHTML = ''
         
     } else {
         postErrorContainer.innerHTML = ''
@@ -75,7 +87,7 @@ formPost.addEventListener('submit', async function(event){
 })
 
 function renderErrors(errors) {
-    postContainer.innerHTML = '';
+    postErrorContainer.innerHTML = ''
     for (const key in errors) {
         errors[key].forEach(error => {
             const errorElement = document.createElement('p');
@@ -86,79 +98,80 @@ function renderErrors(errors) {
     }
 }
 
-const input = document.getElementById('image-input');
+const imageInput = document.getElementById('image-input');
 const preview = document.getElementById('preview');
-
 let compressedFile = null;
+let compressedFiles = []
 
-input.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
+imageInput.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files); // Отримуємо всі файли
+    if (files.length === 0) return;
 
-    if (!file) return;
+    for (const file of files) {
+        await processFile(file);
+    }
 
-    const img = new Image();
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-        img.src = event.target.result;
-    };
-
-    img.onload = async () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        const MAX_WIDTH = 800;
-
-        let width = img.width;
-        let height = img.height;
-
-        if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // Превью
-        preview.src = canvas.toDataURL('image/jpeg', 0.7);
-        preview.style.display = 'block';
-
-        // Сжатый файл
-        const blob = await new Promise(resolve =>
-            canvas.toBlob(resolve, 'image/jpeg', 0.7)
-        );
-
-        compressedFile = new File(
-            [blob],
-            file.name,
-            { type: 'image/jpeg' }
-        );
-    };
-
-    reader.readAsDataURL(file);
+    imageInput.value = ''; 
 });
 
-document.getElementById('form').addEventListener('submit', (e) => {
-    if (!compressedFile) return;
+async function processFile(file) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const reader = new FileReader();
 
-    e.preventDefault();
+        reader.onload = (event) => {
+            img.src = event.target.result;
+        };
 
-    const dt = new DataTransfer();
-    dt.items.add(compressedFile);
+        img.onload = async () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const MAX_WIDTH = 800;
 
-    input.files = dt.files;
+            let width = img.width;
+            let height = img.height;
 
-    e.target.submit();
-});
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Створюємо окремий елемент для прев'ю
+            const previewImg = document.createElement('img');
+            previewImg.src = canvas.toDataURL('image/jpeg', 0.7);
+
+            previewImg.style.width = "11vw"; 
+            previewImg.style.height = "25vh";
+            previewImg.style.objectFit = 'cover';
+            previewImg.style.borderRadius = '2%';
+
+            preview.appendChild(previewImg);
+
+            // Стискаємо та додаємо в масив
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.7));
+            const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+            
+            compressedFiles.push(compressedFile);
+            resolve();
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+
+
+
+
 
 const tagPopup = document.querySelector(".tag_pop_up");
-const tagClose = document.querySelector(".tag_close");
-const tagCancel = document.querySelector(".tag_button_close");
-const tagForm = document.querySelector(".tag_form");
-const tagInput = document.querySelector(".tag_input");
+const openTagBtn = document.querySelector("#open_tag_form");
+const closeTag = document.querySelector(".tag_close");
+const cancelTag = document.querySelector(".tag_button_close");
 
 function openTagPopup() {
     tagPopup.classList.remove("disable");
@@ -168,46 +181,10 @@ function closeTagPopup() {
     tagPopup.classList.add("disable");
 }
 
-function normalizeHashtags(value) {
-    value = value.trimStart();
 
-    if (value === "") {
-        return "";
-    }
+openTagBtn.addEventListener("click", openTagPopup);
 
-    if (!value.startsWith("#")) {
-        value = "#" + value;
-    }
 
-    value = value.replace(/\s+/g, " #");
-
-    value = value
-        .split(" ")
-        .filter(tag => tag !== "#")
-        .join(" ");
-
-    return value;
-}
-
-if (tagClose) {
-    tagClose.addEventListener("click", closeTagPopup);
-}
-
-if (tagCancel) {
-    tagCancel.addEventListener("click", closeTagPopup);
-}
-
-if (tagInput && tagForm) {
-    tagInput.addEventListener("input", function () {
-        tagInput.value = normalizeHashtags(tagInput.value);
-    });
-
-    tagForm.addEventListener("submit", function (e) {
-        tagInput.value = normalizeHashtags(tagInput.value);
-
-        if (tagInput.value === "" || tagInput.value === "#") {
-            e.preventDefault();
-            alert("Введіть хештег");
-        }
-    });
-}
+closeTag.addEventListener("click", closeTagPopup);
+cancelTag.addEventListener("click", closeTagPopup);
+openTagBtn.addEventListener("click", openTagPopup);
