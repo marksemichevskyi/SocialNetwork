@@ -45,7 +45,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ("title", "topic", "content", "tags")
+        fields = ("title", "topic","tags", "content")
 
         widgets = {
             "title": forms.TextInput(
@@ -62,7 +62,7 @@ class PostForm(forms.ModelForm):
         labels = {
             "title": "Назва публікації",
             "topic": "Тема публікації",
-            "content": "Зміст публікації",
+            "content": ""
         }
 
     def __init__(self, *args, links=None, images=None, **kwargs):

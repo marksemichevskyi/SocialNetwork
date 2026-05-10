@@ -147,7 +147,7 @@ async function processFile(file) {
             previewImg.style.width = "11vw"; 
             previewImg.style.height = "25vh";
             previewImg.style.objectFit = 'cover';
-            previewImg.style.borderRadius = '2%';
+            previewImg.style.borderRadius = '10%';
 
             preview.appendChild(previewImg);
 
@@ -167,7 +167,7 @@ async function processFile(file) {
 
 
 
-
+const textArea = document.querySelector('#id_content')
 const tagPopup = document.querySelector(".tag_pop_up");
 const openTagBtn = document.querySelector("#open_tag_form");
 const closeTag = document.querySelector(".tag_close");
@@ -188,3 +188,43 @@ openTagBtn.addEventListener("click", openTagPopup);
 closeTag.addEventListener("click", closeTagPopup);
 cancelTag.addEventListener("click", closeTagPopup);
 openTagBtn.addEventListener("click", openTagPopup);
+
+
+
+
+// function getSelectedTags() {
+//     const activeCheckboxes = document.querySelectorAll('#form_post input[type="checkbox"]:checked');
+//     const selectedTags = [];
+    
+//     activeCheckboxes.forEach((checkbox) => {
+//         const label = checkbox.nextElementSibling;
+//         selectedTags.push(label.textContent);
+//     });
+
+//     console.log("Вибрані теги:", selectedTags);
+//     return selectedTags;
+// }
+
+document.querySelectorAll('#form_post input[type="checkbox"]').forEach(input => {
+
+    input.addEventListener('change', () => {
+        let tag = input.nextElementSibling.textContent.trim();
+        let tags = textArea.value
+            .split(' ')
+            .filter(item => item !== '');
+
+        if (input.checked) {
+            tags.push(tag);
+            input.parentElement.classList.add('selected_tag')
+
+        } else {
+            tags = tags.filter(item => item !== tag);
+            input.parentElement.classList.remove('selected_tag')
+
+        }
+            textArea.value = tags.join(' ');
+
+    });
+
+});
+
