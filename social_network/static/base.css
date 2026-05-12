@@ -722,3 +722,166 @@ h4, h3{
     height: 100%;
 
 }
+
+
+
+.post {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 !important; 
+    background-color: #ffffff;
+    border: 0.15vh solid #D8D3DE;
+    border-radius: 2.2vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-bottom: 2vh;
+}
+
+
+.creator_div {
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;        
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2.5vh 1.8vw 1.5vh 1.8vw !important; 
+    border-bottom: 0.1vh solid #ECE8F2 !important;
+}
+
+.creator_profile {
+    display: flex;
+    align-items: center; 
+    gap: 0.8vw;
+}
+
+.avatar_div img {
+    width: 2.8vw;
+    height: 2.8vw;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.creator_profile h4 {
+    margin: 0;
+    font-size: 1.8vh;
+    font-weight: 200; 
+}
+
+
+.signature {
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.signature_test {
+    height: 3.5vh;
+    width: auto;
+    display: block;
+}
+
+
+.post_div {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2.2vh 1.8vw 2.5vh 1.8vw !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.post_div h3 {
+    margin: 0;
+    font-size: 2.2vh;
+    font-weight: 200;
+}
+
+.post_div p {
+    margin: 0;
+    font-size: 1.7vh;
+    line-height: 1.4;
+    color: #070A1C;
+}
+
+
+.post_image_div {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1vw !important;
+    width: 100%;
+    margin-top: 1.5vh;
+}
+
+.post_image_div img {
+    width: 100% !important;
+    aspect-ratio: 1 / 1.1; 
+    object-fit: cover;
+    border-radius: 1.8vh !important;
+}
+
+.post_info_div{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-top:1vh;
+}
+
+.post_reactions{
+    display:flex;
+    align-items:center;
+
+    gap:1.2vw;
+}
+
+.reaction_button{
+    display:flex;
+    align-items:center;
+    gap:0.35vw;
+
+    border:none;
+    background:none;
+
+    padding:0;
+
+    cursor:pointer;
+
+    font-family:'GTWalsheimPro';
+    font-size:0.92rem;
+    font-weight:100;
+
+    color:#5E5566;
+
+    transition:0.2s ease;
+}
+
+.reaction_button:hover{
+    opacity:0.7;
+}
+
+.reaction_button img{
+    width:1vw;
+    height:1vw;
+
+    object-fit:contain;
+}
+
+.post_views{
+    display:flex;
+    align-items:center;
+
+    gap:0.35vw;
+
+    font-size:0.92rem;
+    color:#5E5566;
+}
+
+.post_views img{
+    width:1vw;
+    height:1vw;
+
+    object-fit:contain;
+}

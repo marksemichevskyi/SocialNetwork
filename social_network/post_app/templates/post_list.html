@@ -1,64 +1,91 @@
-{% load static%}
+{% load static %}
 
 {% block content %}
-<div id = 'post_list'>
+<div id='post_list'>
+
 {% for post in posts %}
+
     <div class="post">
-        <div class = "creator_div">
+
+        <div class="creator_div">
+
             <div class="creator_profile">
 
                 <div class="avatar_div">
-                    <img src = "{% static 'images/avatar_test.png' %}"> 
+                    <img src="{% static 'images/avatar_test.png' %}">
                 </div>
-                <h4>{{post.author.pseudonym}}</h4>
 
-            
+                <h4>{{ post.author.pseudonym }}</h4>
 
             </div>
-            
+
             <div class="signature">
-                <img src = "{% static 'images/signature_test.png' %}" class="signature_test">
+                <img src="{% static 'images/signature_test.png' %}" class="signature_test">
             </div>
 
-            <div class="options">
-                
-            </div>
         </div>
-        
-        <div class = "post_div">
-            
-            <h3>{{post.topic}}</h3>
-            <p>{{post.content}}</p>
+
+        <div class="post_div">
+
+            <h3>{{ post.topic }}</h3>
+
+            <p>{{ post.content }}</p>
+
             <div class="post_links">
+
                 {% for link in post.links.all %}
-                <li>{{link.url}}</li>
+                    <li>{{ link.url }}</li>
                 {% endfor %}
+
             </div>
 
             <div class="post_image_div">
-                {% for image in post.images.all%}
-                    <img src = '{{image.compressed_image.url}}'>
+
+                {% for image in post.images.all %}
+                    <img src="{{ image.compressed_image.url }}">
                 {% endfor %}
+
             </div>
 
             <div class="post_info_div">
 
+                <div class="post_reactions">
+
+                    <button class="reaction_button">
+                        <img src="{% static 'images/like_icon.png' %}">
+                        <span>120 Вподобань</span>
+                    </button>
+
+                    <button class="reaction_button">
+                        <img src="{% static 'images/dislike_icon.png' %}">
+                        <span>12 Не сподобалось</span>
+                    </button>
+
+                    <button class="reaction_button">
+                        <img src="{% static 'images/comment_icon.png' %}">
+                        <span>32 Коментарі</span>
+                    </button>
+
+                </div>
+
+                <div class="post_views">
+                    <img src="{% static 'images/views_icon.png' %}">
+                    <span>890 Переглядів</span>
+                </div>
+
             </div>
 
-            
         </div>
-        
-        
-        
-        
-        
-
-        </div>
-    {% endfor%}
-    <div id="load-post-line"></div>
 
     </div>
-{% endblock%}
+
+{% endfor %}
+
+    <div id="load-post-line"></div>
+
+</div>
+{% endblock %}
+
 {% block scripts %}
-<script src="{% static 'post_app/js/load_post.js'%}"></script>
-{% endblock%}
+<script src="{% static 'post_app/js/load_post.js' %}"></script>
+{% endblock %}
