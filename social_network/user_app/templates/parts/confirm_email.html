@@ -1,0 +1,11 @@
+<span class = 'large_text'>Підтвердження пошти</span>
+<span class = 'small_text'>Ми надіслали 6-значний код на вашу пошту (you@example.com). Введіть його нижче, щоб підтвердити акаунт</span>
+<form method = 'post' action = '{% url "confirm_email"%}' id = 'confirm_email'>
+    <h3 class = "confirm_label">Код підтвердження</h3>
+    <div class = 'confirm_div'>
+        {{ form_confirm.as_p }}
+    </div>
+    <div class = 'error_container' id = 'confirm_error'></div>
+    <button class = 'create_button' id = 'confirm_button'>підтвердити</button>
+    <button class = 'exit_button' id = 'back_to_register'>назад</button>
+</form>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block links %}
+    <link rel="stylesheet" href = "{% static 'main_app/css/main.css' %}">
+{% endblock %}
+
+{% block meta %}
+<meta name="csrf_token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block side_panel_content %}
+    <div class = "user_profile_div">
+        <div class = "profile_div">
+            <div class = "avatar_div">
+                <img src = "{% static 'images/avatar_test.png' %}"> 
+            </div>
+            <div class = "username_div">
+                <span class = "name">Lina Li</span>
+                <span class = "username">@thelili</span>
+            </div>
+        </div>
+        <div class = "info_div">
+            <div class = "info_slot_div">
+                <span class = "info_number">566</span>
+                <span class = "info_text">Дописи</span>
+            </div>
+            <div class = "info_slot_div" id = "center_info_slot">
+                <span class = "info_number">12.1K</span>
+                <span class = "info_text">Читачі</span>
+            </div>
+            <div class = "info_slot_div">
+                <span class = "info_number">222</span>
+                <span class = "info_text">Друзі</span>
+            </div>
+        </div>
+    </div>
+
+    <div class = "side_panel_div">
+        <div class = "side_panel_text">
+            <a class = "side_panel_link">Дивитись всі</a>
+            <p class = "side_panel_p">Запити</p>
+        </div>
+        <div class = "side_panel_content">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+
+        </div>
+    </div>
+    <div class = "side_panel_div">
+        <div class = "side_panel_text">
+            <a class = "side_panel_link">Дивитись всі</a>
+            <p class = "side_panel_p">Повідомлення</p>
+        </div>
+        <div class = "side_panel_content">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% include 'parts/create_post_pannel.html'%}
+    <div class = 'pop-up disable' id = 'username_pop-up'>
+        <div class = 'form_div' id = 'form_username_div'>
+            <h1>Додай деталі про себе</h1>
+            <form id = 'form_username' method = 'post' action= '{% url "set_username" %}'>
+                {{form_username.as_p}}
+                <div class = 'error_container' id = 'username_error_container'></div>
+                <div class = 'button_container'>
+                <button type="submit" class = 'style_button' id = 'continue_button'>Продовжити</button>
+                </div>
+            </form>  
+        </div>
+    </div>
+
+    <div class = 'pop-up disable' id = 'post_form_pop-up'>
+        {% include 'parts/post_form.html'%}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'main_app/js/main.js' %}"></script>
+{% endblock %}

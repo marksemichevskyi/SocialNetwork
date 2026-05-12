@@ -1,0 +1,70 @@
+{% load static %}
+
+<div class = 'form_div' id = 'form_post_div'>
+    <h1>Створити публікацію </h1>
+    <form id = 'form_post' method = 'post' action= '{% url "create_post" %}'>
+    {% for field in form_post %}
+        <p id="row_{{ field.name }}" 
+           class="form-group {% if field.name == 'images' %}disable{% endif %}">
+            
+            {% if field.name == 'tags' %}
+
+    <div class="tags_container">
+
+    {% for checkbox in form_post.tags %}
+        <label class="tag_item">
+            {{ checkbox.tag }}
+            <span>{{ checkbox.choice_label }}</span>
+        </label>
+    {% endfor %}
+
+        <button type="button" class="open_tag_form" id = 'open_tag_form'>
+            <img  src = "{% static 'images/plus_button.png' %}">   
+        
+        </button>
+
+        </div>
+
+        {% else %}
+
+        {{ field.label_tag }}
+            {{ field }}
+
+            {% endif %}
+            
+            {% if field.errors %}
+                <span class="error">{{ field.errors }}</span>
+            {% endif %}
+        </p>
+    {% endfor %}
+        <label for="link_container">Посилання:</label>
+        <div id = 'links_list'>
+            <input type="url" name="link" placeholder="Посилання" id = 'link_1'>
+            
+            <button type="button" class="open_tag_form" id="add_link">
+                <img src="{% static 'images/plus_button.png' %}">
+            </button>
+        </div>
+        <div class = 'error_container' id = "post_error"></div>
+        
+
+
+            <div id="preview">
+            </div>
+        
+            <div class = 'post_forms_buttons'>
+
+            <button type="submit" class = 'style_button'>
+                <img src = "{% static 'images/publication_button_icon.png' %}">
+            </button>
+
+            <button type="button" id = 'image_button'>
+                <img src = "{% static 'images/image_button_icon.png' %}">
+            </button>
+
+            </div>
+
+            
+        </div>
+    </form>
+</div>

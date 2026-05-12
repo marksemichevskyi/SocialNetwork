@@ -1,0 +1,59 @@
+.design_panel {
+    display: none;
+
+    margin-top: 15px;
+}
+
+.design_panel.active {
+    display: block;
+}
+
+.tag_form {
+    gap: 3vh;
+    align-items: center;
+}
+
+.tag_form.active {
+    display: flex;
+}
+
+.add_tag {
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 12px;
+}
+
+.open_tag_form {
+    border-radius:10vw;
+    outline:none;
+    box-shadow:none;
+    border:none;
+    background-color: white;
+    width: 1.3vw;
+    height: 1.3vw;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    order: 999;
+}
+
+.open_tag_form img {
+    width: 100%;
+}
+
+.disable {
+    display: none;
+}
+
+.exit_button_div{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+#add_tag_button {
+    width: clamp(1px, 5.6vw, 90px);
+    cursor: pointer;
+}

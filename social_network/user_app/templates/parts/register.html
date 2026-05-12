@@ -1,0 +1,6 @@
+<span class = 'text'>Приєднуйся до World IT</span>
+<form id = 'form_register' method = 'post' action = '{% url "register" %}'>
+    {{ form_register.as_p }}
+    <div class = 'error_container' id = "register_error"></div>
+    <button class = 'create_button'>Створити акаунт</button>
+</form>

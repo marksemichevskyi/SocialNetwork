@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block links %}
+<link rel="stylesheet" href = "{% static 'friends_app/css/friends.css' %}">
+{% endblock %}
+
+{% block side_panel_content%}
+    <button class = "button" id = "main">Головна</button>
+    <button class = "button" id = "request">Запити</button>
+    <button class = "button" id = "recommendations">Рекомендації</button>
+    <button class = "button" id = "allfriends">Всі друзі</button>
+{% endblock %}
+{% block scripts %}
+    <script src = '{% static "friends_app/js/friends.js" %}'></script>
+{% endblock %}
+{%block content %}
+    <h1></h1>
+{% endblock %}

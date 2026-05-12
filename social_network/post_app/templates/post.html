@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+<meta name="csrf_token" content="{{ csrf_token }}">
+{% endblock %}
+{% block links %}
+<link rel="stylesheet" href = "{% static 'post_app/css/post.css' %}">
+<link rel="stylesheet" href="{% static 'post_app/css/add_tag.css' %}">
+{% endblock %}
+
+{% block side_panel_content %} 
+ <div class = "user_profile_div">
+        <div class = "profile_div">
+            <div class = "avatar_div">
+                <img src = "{% static 'images/avatar_test.png' %}"> 
+            </div>
+            
+            <div class = "username_div">
+                <span class = "name">Lina Li</span>
+                <span class = "username">@thelili</span>
+            </div>
+        </div>
+        <div class = "info_div">
+            <div class = "info_slot_div">
+                <span class = "info_number">566</span>
+                <span class = "info_text">Дописи</span>
+            </div>
+            <div class = "info_slot_div" id = "center_info_slot">
+                <span class = "info_number">12.1K</span>
+                <span class = "info_text">Читачі</span>
+            </div>
+            <div class = "info_slot_div">
+                <span class = "info_number">222</span>
+                <span class = "info_text">Друзі</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+
+<div class="post_right_column">
+
+    {% include 'parts/create_post_pannel.html' %}
+    {% include 'post_list.html' %}
+    
+</div>
+
+<div class="pop-up disable">
+    {% include 'parts/post_form.html' %}
+    
+    {% include 'parts/add_tag.html' %}
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script src="{% static 'post_app/js/post.js' %}"></script>
+{% endblock %}
