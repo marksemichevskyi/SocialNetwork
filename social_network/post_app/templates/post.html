@@ -15,6 +15,7 @@
             <div class = "avatar_div">
                 <img src = "{% static 'images/avatar_test.png' %}"> 
             </div>
+            
             <div class = "username_div">
                 <span class = "name">Lina Li</span>
                 <span class = "username">@thelili</span>
@@ -41,6 +42,7 @@
 <div class="post_right_column">
 
     {% include 'parts/create_post_pannel.html' %}
+    {% include 'post_list.html' %}
     
 </div>
 
@@ -51,7 +53,10 @@
 
 </div>
 
+
 {% endblock %}
+
+
 
 {% block scripts %}
     <script src="{% static 'post_app/js/post.js' %}"></script>

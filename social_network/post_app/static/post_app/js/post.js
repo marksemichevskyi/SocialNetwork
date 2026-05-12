@@ -19,6 +19,7 @@ const listLinks = document.querySelector('#links_list')
 const btnAddImage = document.querySelector('#image_button')
 
 
+
 btnAddImage.addEventListener('click', () => {
     if (imageButton) {
         imageButton.click();
@@ -26,6 +27,9 @@ btnAddImage.addEventListener('click', () => {
         console.error("Помилка: imageInput не знайдено в DOM!");
     }
 });
+
+const previewText = document.querySelector('#post_text')
+const postTextArea = document.querySelector('#id_content')
 
 
 
@@ -43,6 +47,8 @@ listLinks.append(newLink)
 
 toCreationButton.addEventListener('click', () => {
     postContainer.classList.remove("disable")
+    postTextArea.value = previewText.value
+
 })
 
 
@@ -205,26 +211,90 @@ openTagBtn.addEventListener("click", openTagPopup);
 //     return selectedTags;
 // }
 
-document.querySelectorAll('#form_post input[type="checkbox"]').forEach(input => {
+const tagsContainer = document.querySelector('.tags_container');
 
-    input.addEventListener('change', () => {
-        let tag = input.nextElementSibling.textContent.trim();
-        let tags = textArea.value
-            .split(' ')
-            .filter(item => item !== '');
+if (tagsContainer) {
+    tagsContainer.addEventListener('change', (event) => {
+        // Перевіряємо, що клікнули саме по чекбоксу
+        if (event.target.type === 'checkbox') {
+            const input = event.target;
+            const tag = input.nextElementSibling.textContent.trim();
+            const parentLabel = input.parentElement;
+            
+            let tags = textArea.value
+                .split(' ')
+                .filter(item => item !== '');
 
-        if (input.checked) {
-            tags.push(tag);
-            input.parentElement.classList.add('selected_tag')
-
-        } else {
-            tags = tags.filter(item => item !== tag);
-            input.parentElement.classList.remove('selected_tag')
-
-        }
+            if (input.checked) {
+                if (!tags.includes(tag)) tags.push(tag);
+                parentLabel.classList.add('selected_tag');
+            } else {
+                tags = tags.filter(item => item !== tag);
+                parentLabel.classList.remove('selected_tag');
+            }
+            
             textArea.value = tags.join(' ');
+        }
+    });
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedContent = localStorage.getItem('saved_post_content');
+    const textAreaField = document.querySelector('#id_content');
+
+    if (savedContent && textAreaField) {
+        textAreaField.value = savedContent;
+        localStorage.removeItem('saved_post_content');
+
+    }
+})
+
+const tagForm = document.querySelector('.tag_pop_up form');
+
+if (tagForm) {
+    tagForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); 
+
+        const formData = new FormData(tagForm);
+        const tagName = formData.get('name'); 
+            const response = await fetch(tagForm.action, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': "XMLHttpRequest",
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success === true) {
+                // 1. Створюємо елемент label
+                const tagWrapper = document.createElement('label');
+                tagWrapper.className = 'tag_item';
+
+                // 2. Наповнюємо його HTML-структурою (як у Django template)
+                // Додаємо checked, щоб тег був одразу вибраний
+                tagWrapper.innerHTML = `
+                    <input type="checkbox" name="tags" value="${data.tag_id}">
+                    <span>${data.tag_name}</span>
+                `;
+
+                // 3. Знаходимо контейнер та кнопку "плюс"
+                const tagsContainer = document.querySelector('.tags_container');
+                const plusButton = document.getElementById('open_tag_form');
+
+                // 4. Вставляємо новий тег перед кнопкою плюса
+                if (tagsContainer && plusButton) {
+                    tagsContainer.insertBefore(tagWrapper, plusButton);
+                }
+
+                // 5. Очищуємо та закриваємо форму
+                closeTagPopup(); // Переконайтеся, що ця функція існує
+                tagForm.reset();
+            }
 
     });
-
-});
+}
 
