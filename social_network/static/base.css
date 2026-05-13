@@ -713,8 +713,11 @@ h4, h3{
     
 }
 
-.avatar_div {
-    height: 100%;
+.avatar_d {
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
@@ -799,7 +802,7 @@ h4, h3{
 
 .post_div p {
     margin: 0;
-    font-size: 1.7vh;
+    font-size: 1rem;
     line-height: 1.4;
     color: #070A1C;
 }
@@ -884,4 +887,16 @@ h4, h3{
     height:1vw;
 
     object-fit:contain;
+}
+
+.post_div a {
+    font-size: 0.9rem;
+    color: #543C52;
+    text-decoration: underline;
+    
+}
+
+.post_links {
+    display: flex;
+    flex-direction: column;
 }

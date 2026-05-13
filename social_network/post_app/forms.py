@@ -5,7 +5,6 @@ from PIL import Image
 
 from .models import Post, PostLink, PostImage, PostTag
 
-
 MAX_COMPRESSED_SIZE = 5 * 1024 * 1024
 
 
@@ -65,37 +64,28 @@ class PostForm(forms.ModelForm):
             "content": ""
         }
 
-    def __init__(self, *args, links=None, images=None, **kwargs):
+    def __init__(self, *args, **kwargs):
+        # Витягуємо списки, які ми передали вручну з View
+        self.raw_links = kwargs.pop('links', [])
+        self.images_list = kwargs.pop('images', [])
         super().__init__(*args, **kwargs)
-
         self.links_list = []
-        self.images_list = []
-
-        if links:
-            for link in links:
-                cleaned_link = link.strip()
-
-                if cleaned_link:
-                    self.links_list.append(cleaned_link)
-
-        if images:
-            self.images_list = list(images)
+        if not self.images_list and self.files:
+            self.images_list = self.files.getlist('images')
 
     def clean(self):
         cleaned_data = super().clean()
-
         url_field = forms.URLField()
-
-        for link in self.links_list:
-            try:
-                url_field.clean(link)
-
-            except forms.ValidationError:
-                self.add_error(
-                    None,
-                    f'Посилання "{link}" недійсне'
-                )
-
+        
+        # Обробляємо посилання тут
+        for link in self.raw_links:
+            link = link.strip()
+            if link:
+                try:
+                    url_field.clean(link)
+                    self.links_list.append(link) # Додаємо тільки валідні
+                except forms.ValidationError:
+                    self.add_error(None, f'Посилання "{link}" недійсне')
         return cleaned_data
 
     def compress_image(self, image):

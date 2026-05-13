@@ -38,7 +38,7 @@ const postTextArea = document.querySelector('#id_content')
 btnAddLink.addEventListener('click', () => {
 const newLink = document.createElement('input')
 newLink.type = 'url'
-newLink.name = 'link'
+newLink.name = 'links'
 newLink.placeholder = 'Посилання'
 listLinks.append(newLink)
 })
@@ -61,7 +61,7 @@ formPost.addEventListener('submit', async function(event) {
 
     compressedFiles.forEach(file => {
         if (file) {
-            formData.append('images[]', file);
+            formData.append('images', file);
         }
     })
 
