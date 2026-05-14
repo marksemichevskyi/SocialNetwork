@@ -38,25 +38,26 @@ body{
     box-sizing:border-box;
     display:flex;
     flex-direction:row;
-    padding-left:4vw;
+    justify-content: center;
     width:100%;
     gap:0.6vw;
 }
 
 .content_div{
     display:flex;
-    width:clamp(1px,100%,1060px);
+    width:clamp(1px,100%,923px);
     height:clamp(1px,90vh,900px);
     overflow-y:scroll;
     right:0;
     overflow: hidden;
+
 }
 .content{
     width:100%;
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
-    padding:1%;
+    scrollbar-width: none;
     gap:1.5vh;
     overflow-x: hidden;
 }
@@ -67,11 +68,12 @@ body{
     height:8.1vh;
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    padding-left:4%;
-    padding-right:4%;
+    justify-content:center;
+    padding-left:clamp(1px,3.1vw,57px);
+    padding-right:clamp(1px,3.1vw,57px);
     background-color:#ffffff;
     border-bottom:0.1vh solid #ECE8F2;
+    gap: clamp(1px,24.5vw,376px)
 }
 
 .buttons{
@@ -147,7 +149,7 @@ body{
 }
 
 .exit_button img{
-    width:6vw;
+    width:5.5vw;
 }
 
 .selected_button{
@@ -801,6 +803,8 @@ h4, h3{
 }
 
 .post_div p {
+    width: 100%;
+    word-break: break-all;
     margin: 0;
     font-size: 1rem;
     line-height: 1.4;
@@ -900,3 +904,48 @@ h4, h3{
     display: flex;
     flex-direction: column;
 }
+
+
+.delete_button { 
+    position: relative;
+    border-radius:10vw;
+    outline:none;
+    box-shadow:none;
+    border:none;
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    z-index: 2;
+    right: 3.1vw;
+    top: 1vh;
+    width: 2.5vw;
+    height: 5.5vh;
+    
+    
+}
+
+.preview_div {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    width: 11vw;
+    height: 25vh;
+    
+}
+
+.preview_div img {
+    z-index: 1;
+
+}
+
+
+.logo_ref {
+    width: clamp(1px,7.5vw,145px);
+}
+
+.logo_ref img {
+    width: 100%;
+}
+
