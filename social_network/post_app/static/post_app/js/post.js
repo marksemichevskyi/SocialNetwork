@@ -210,26 +210,39 @@ openTagBtn.addEventListener("click", openTagPopup);
 closeTag.addEventListener("click", closeTagPopup);
 cancelTag.addEventListener("click", closeTagPopup);
 
-if (tagsContainer) {
-    tagsContainer.addEventListener('change', (event) => {
-        if (event.target.type === 'checkbox') {
-            const input = event.target;
-            const tag = input.nextElementSibling.textContent.trim();
-            const parentLabel = input.parentElement;
-            
-            let tags = postTextArea.value.split(' ').filter(item => item !== '');
 
-            if (input.checked) {
-                if (!tags.includes(tag)) tags.push(tag);
-                parentLabel.classList.add('selected_tag');
-            } else {
-                tags = tags.filter(item => item !== tag);
-                parentLabel.classList.remove('selected_tag');
+const textAreaContent = document.querySelector('.textarea_content')
+const customTextarea = document.querySelector('.textarea_content textarea')
+customTextarea.addEventListener('input', () =>{
+    customTextarea.style.height = 'auto'
+    customTextarea.style.height = customTextarea.scrollHeight + 'px'
+})
+
+if (textAreaContent) {
+    textAreaContent.innerHTML += '<textarea name="tag_textarea" class="tag_textarea" readonly></textarea>'
+    const tagTextArea = document.querySelector('.tag_textarea')
+    
+    if (tagsContainer) {
+        tagsContainer.addEventListener('change', (event) => {
+            if (event.target.type === 'checkbox') {
+                const input = event.target;
+                const tag = input.nextElementSibling.textContent.trim();
+                const parentLabel = input.parentElement;
+                
+                let tags = tagTextArea.value.split(' ').filter(item => item !== '');
+                
+                if (input.checked) {
+                    if (!tags.includes(tag)) tags.push(tag);
+                    parentLabel.classList.add('selected_tag');
+                } else {
+                    tags = tags.filter(item => item !== tag);
+                    parentLabel.classList.remove('selected_tag');
+                }
+                
+                tagTextArea.value = tags.join(' ');
             }
-            
-            postTextArea.value = tags.join(' ');
-        }
-    });
+        });
+    }
 }
 
 // Збереження контенту при завантаженні (якщо було в localStorage)
@@ -277,4 +290,9 @@ if (tagForm) {
         }
     });
 }
+
+const btnFormClose = document.querySelector('#post_form_close')
+btnFormClose.addEventListener('click', ()=> {
+    postContainer.classList.add('disable')
+})
 

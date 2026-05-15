@@ -5,7 +5,7 @@
 .user_profile_div{
     box-sizing: border-box;
     width: 100%;
-    height: 32vh;
+    height: clamp(1px,32vh,271px);
     display: flex;
     flex-direction: column;
     border-width: 0.2vh;
@@ -13,8 +13,8 @@
     border-style: solid;
     border-color:#D8D3DE ;
     background-color:#ffffff ;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
+    padding-top: clamp(1px,2vh,15px);
+    padding-bottom: clamp(1px,2vh,15px);
 }
 
 .side_panel_text{
@@ -44,7 +44,7 @@
 }
 
 .username_div{
-    height: 9vh;
+    height: clamp(1px,9vh,60px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,7 +52,7 @@
 }
 
 .name{
-    font-size: 1.8rem;
+    font-size: clamp(1px,1.8rem,27px); 
     font-weight: 200;
 }
 

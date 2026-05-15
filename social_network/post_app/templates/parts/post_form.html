@@ -1,11 +1,12 @@
 {% load static %}
 
 <div class = 'form_div' id = 'form_post_div'>
+    <button id="post_form_close">&times;</button>
     <h1>Створити публікацію </h1>
     <form id = 'form_post' method = 'post' action= '{% url "create_post" %}' enctype="multipart/form-data">
     {% for field in form_post %}
         <p id="row_{{ field.name }}" 
-           class="form-group {% if field.name == 'images' %}disable{% endif %}">
+           class="form-group {% if field.name == 'images' %}disable{% endif %} {% if field.name == 'content' %}textarea_content{% endif %}">
             
             {% if field.name == 'tags' %}
 
