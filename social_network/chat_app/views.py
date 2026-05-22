@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Chat
+from friends_app.models import *
+from user_app.models import *
 # Create your views here.
 
 class ChatView(LoginRequiredMixin, TemplateView):
