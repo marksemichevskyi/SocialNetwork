@@ -1,0 +1,35 @@
+{% load static %}
+{% for user in users %}
+    <div class="user">
+            <div class="friend_info">
+
+            <div class="friend_avatar">
+               <img src = "{% static 'images/avatar_test.png' %}"> 
+            </div>
+
+            <div class="friend_username">
+                <h3 class="friend_pseudonym">{{ user.pseudonym }}</h3>
+                <h4 class="friend_name">{{ user.username }}</h4>
+            </div>
+
+            </div>
+            <div class="frame_buttons">
+                
+                {% if section == "requests" %}
+                    <button data-url="{% url 'friends_actions' 'accept' user.id %}" class="style_button add_friend_button friend-action-btn">Підтвердити</button>
+                    <button data-url="{% url 'friends_actions' 'delete' user.id %}" class="reject_button friend-action-btn">Видалити</button>
+        
+                {% elif section == "friends" %}
+                    <button class="style_button add_friend_button" >Повідомлення</button>
+                    <button data-url="{% url 'friends_actions' 'delete' user.id %}" class="reject_button friend-action-btn">Видалити</button>
+        
+                {% elif section == "recommendations" %}
+                    <button  data-url="{% url 'friends_actions' 'add' user.id %}" class="style_button add_friend_button" >Дотати</button>
+                    <button  data-url="{% url 'friends_actions' 'ignore' user.id %}" class="reject_button friend-action-btn" >Видалити</button>
+                    
+                {% endif %}
+
+            </div>
+    </div>
+    
+{% endfor %}

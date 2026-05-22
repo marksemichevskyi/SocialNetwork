@@ -1,19 +1,26 @@
 {% extends "base.html" %}
-{% load static %} 
+{% load static %}
 
 {% block links %}
-<link rel="stylesheet" href = "{% static 'friends_app/css/friends.css' %}">
+    <link rel ="stylesheet" href="{% static 'friends_app/css/friends.css' %}">
 {% endblock %}
 
+{% block meta %}
+    <meta name="csrfToken" content = '{{ csrf_token }}'>
+{% endblock %}
+
+
 {% block side_panel_content%}
-    <button class = "button" id = "main">Головна</button>
-    <button class = "button" id = "request">Запити</button>
-    <button class = "button" id = "recommendations">Рекомендації</button>
-    <button class = "button" id = "allfriends">Всі друзі</button>
+    {% include 'parts/friends_nav.html' %}
 {% endblock %}
+
+{% block content%}
+    {% include 'parts/friends_home.html' %}
+    {% include 'parts/friends_section.html' %}
+{% endblock %}
+
 {% block scripts %}
-    <script src = '{% static "friends_app/js/friends.js" %}'></script>
+    <script src="{% static 'friends_app/js/friends_section.js' %}"></script>
+    <script src="{% static 'friends_app/js/friends_actions.js' %}"></script>
 {% endblock %}
-{%block content %}
-    <h1></h1>
-{% endblock %}
+

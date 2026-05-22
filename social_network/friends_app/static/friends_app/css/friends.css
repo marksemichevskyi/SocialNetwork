@@ -4,7 +4,8 @@
     display: flex;
     justify-content: left;
     padding-bottom: 1.2vh;
-    align-items: top;
+    padding-left: 0;
+    
     border: none;
     outline: none;
     box-shadow: none;
@@ -13,6 +14,13 @@
     font-family: 'GTWalsheimPro';
     font-size: 1rem;
 
+}
+h2 {
+    font-size:  clamp(1px, 1rem, 16px);
+    margin: 0;
+    padding: 0;
+
+    font-weight: 100;
 }
 
 .side_panel{
@@ -26,4 +34,135 @@
     color: black;
     font-weight: 200;
     border-bottom: 0.5vh solid #543C52;
+}
+
+.side_panel nav {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: clamp(1px,2vh,16px);
+    
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    ;
+    
+}
+
+.section_frame, #current-section{
+    display: flex;
+    
+    padding: 1.5%;
+    flex-direction: column;
+    border-width: 0.2vh;
+    border-radius: 1vh;
+    border-style: solid;
+    border-color: #D8D3DE;
+    background-color: #ffffff;
+    gap:  clamp(1px, 2vh, 15px);
+}
+
+
+.user {
+    border-width: 0.2vh;
+    border-radius: 1vh;
+    border-style: solid;
+    border-color: #D8D3DE;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width:  clamp(1px, 18.5vw, 289px);
+    height: clamp(1px, 35vh, 263px);
+    padding: 1vw;
+    justify-content: space-between;
+}
+
+.section h2 {
+    font-size:  clamp(1px, 1rem, 16px);
+    margin: 0;
+    padding: 0;
+    font-weight: 100;
+}
+
+.section button {
+    border: 0;
+    text-decoration: none;
+    box-shadow: none;
+    background-color: white;
+    color: #543C52;
+}
+
+.friend_username {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: clamp(1px, 1.5vh, 10px);
+
+}
+
+.frame_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+#all-sections {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1px, 1vh, 7.5px);
+    width: 100%;
+}
+
+.friend_name {
+    font-weight: 100;
+}
+.reject_button {
+    background: #ffffff;
+    border-radius: 5vh;
+    font-size: clamp(1px, 0.9rem, 14px);
+    font-weight: 100;
+    width: clamp(1px, 6vw, 94px);
+    color: #513e5d;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+    text-align: center;    
+    border: 0.15vh solid #513e5d;
+}
+
+.frame_buttons button{
+    height: clamp(1px, 5vh, 40px );
+}
+
+.friend_avatar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
+
+.friend_info {
+    width: 100%;
+    gap: clamp(1px, 3vh, 24px);
+    display: flex;
+    flex-direction: column;
+} 
+
+.friend_pseudonym{
+    font-weight: 200;
+    font-size: clamp(1px, 1.5rem, 24px);
+}
+
+.add_friend_button {
+    width: clamp(1px, 7.4vw, 111px);
+}
+
+.cards , #current-section-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: clamp(1px, 0.5vw , 8px )
 }
