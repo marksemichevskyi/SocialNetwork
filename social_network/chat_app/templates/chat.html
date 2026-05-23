@@ -16,11 +16,20 @@
             <img src = '{% static "images/contacts_icon.png" %}'>
             <h1>Контакти</h1>
         </span>
-            {% for chat_data in individual_chats %}
-                <div class="chat" data-id="{{ chat_data.chat_id }}" style="border: 2px solid black; padding: 12px; width: max-content; cursor: pointer; margin: 10px;">
-                    <h3>{{ chat_data.other_user.pseudonym }}</h3>
+        <div class="search_div">
+            <input type="text" id="search_contacts" class="search_bar" placeholder = 'Пошук'>
+            <img src = '{% static "images/search_icon.png" %}'>
+            
+        </div>
+        </input>
+        <div class = 'contacts'>
+            {% for item in friends %}
+                <div class = 'single_contact'>
+                    <img src = '{% static "images/avatar_test.png" %}'>
+                    <h3>{{ item.friend.pseudonym }}</h3>
                 </div>
             {% endfor%}
+        </div>   
 </div> 
 </div> 
 {% endblock %}
@@ -50,7 +59,11 @@
         </div>
 
         <div class = 'last_chat_messages'>
-
+            {% for chat_data in individual_chats %}
+                <div class="chat" data-id="{{ chat_data.chat_id }}" style="border: 2px solid black; padding: 12px; width: max-content; cursor: pointer; margin: 10px;">
+                    <h3>{{ chat_data.other_user.pseudonym }}</h3>
+                </div>
+            {% endfor%}
         </div>
 
     </div>

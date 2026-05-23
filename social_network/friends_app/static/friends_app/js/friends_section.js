@@ -6,11 +6,20 @@ const showAllSections = document.querySelector('#show-all-sections')
 const currentSectionTitle = document.querySelector('#current-section-title')
 const currentSectionList = document.querySelector('#current-section-list')
 const currentSectionLoadLine = document.querySelector('#current-section-load-line')
-
+const visitFriendPage = document.querySelectorAll(".friend_info")
 
 const listButtons = document.querySelectorAll('.button')
 
+async function visitPage(page) {
+    window.location.href = page
 
+}
+
+visitFriendPage.forEach(button =>{
+    button.addEventListener("click", () => {
+        visitPage(page = button.dataset.url)
+    })
+})
 
 listButtons.forEach(button =>{
     button.addEventListener("click", () => {
@@ -87,3 +96,4 @@ sectionButtons.forEach((sectionButton) => {
         }) 
     })
 })
+

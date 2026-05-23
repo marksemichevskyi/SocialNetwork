@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 class PostView(LoginRequiredMixin, TemplateView):
@@ -70,11 +71,22 @@ class AddTagView(View):
             'errors': tag_form.errors.get_json_data()
         }, status=400)
       
-class PostListView(ListView): 
+class PostListView(LoginRequiredMixin, ListView): 
     model = Post
     template_name = "post.html"
     paginate_by = 5
     context_object_name = "posts"
+
+    def get_queryset(self):
+
+        target_user_id = self.kwargs.get('user_id')
+        
+        if target_user_id:
+            
+            return Post.objects.filter(author_id=target_user_id).order_by('-id')
+        
+        return Post.objects.filter(author=self.request.user).order_by('-id')
+
 
     def get(self, request, *args, **kwargs):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -82,15 +94,15 @@ class PostListView(ListView):
             posts = self.get_queryset()
             paginator = Paginator(posts, self.paginate_by)
             post_list = paginator.get_page(page_number)
-            if int(page_number) > paginator.num_pages :
+            
+            if int(page_number) > paginator.num_pages:
+                return JsonResponse({'success': False})
+            else: 
                 return JsonResponse({
-                    'success' : False
-                })
-            else : 
-                return JsonResponse({
-                    'success' : True,
-                    'html' : render_to_string(template_name = "post_list.html" , context = {"posts" : post_list})
-
+                    'success': True,
+                    'html': render_to_string(
+                        template_name="post_list.html", 
+                        context={"posts": post_list, "request": request}
+                    )
                 })
         return super().get(request, *args, **kwargs)
-

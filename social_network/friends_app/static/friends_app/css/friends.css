@@ -67,6 +67,7 @@ h2 {
 
 
 .user {
+
     border-width: 0.2vh;
     border-radius: 1vh;
     border-style: solid;
@@ -145,10 +146,16 @@ h2 {
 } 
 
 .friend_info {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
     width: 100%;
     gap: clamp(1px, 3vh, 24px);
     display: flex;
     flex-direction: column;
+    padding: 0;
+    margin: 0;
 } 
 
 .friend_pseudonym{
@@ -165,4 +172,26 @@ h2 {
     flex-direction: row;
     flex-wrap: wrap;
     gap: clamp(1px, 0.5vw , 8px )
+}
+
+.user_profile_div{
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    border-width: 0.2vh;
+    border-radius: 1vh;
+    border-style: solid;
+    border-color:#D8D3DE ;
+    background-color:#ffffff ;
+    padding-top: clamp(1px,2vh,15px);
+    padding-bottom: clamp(1px,2vh,15px);
+}
+
+.user_profile_div .frame_buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: clamp(1px,2vh,15px);
 }

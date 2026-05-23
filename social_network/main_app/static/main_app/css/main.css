@@ -42,30 +42,6 @@
 
 
 
-.profile_div{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-sizing: border-box;
-}
-
-.avatar_div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-}
-
-.username_div{
-    height: 9vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content:space-evenly;
-}
-
 .name{
     font-size: 1.8rem;
     font-weight: 200;

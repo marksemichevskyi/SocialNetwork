@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Chat
 from friends_app.models import *
 from user_app.models import *
+from friends_app.utils.friends import  *
 # Create your views here.
 
 class ChatView(LoginRequiredMixin, TemplateView):
@@ -19,4 +20,14 @@ class ChatView(LoginRequiredMixin, TemplateView):
                 "other_user":  other_user
             })
         context["individual_chats"] = data
+        
+        friends = get_friends_by_section(current_user= self.request.user, section = 'friends')
+        print(friends)
+        friends_data =[]
+        for friend in friends:
+            friends_data.append({
+                'friend': friend
+                })
+        context['friends'] = friends_data  
+        print(context['friends'])
         return context

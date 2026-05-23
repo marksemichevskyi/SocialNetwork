@@ -707,6 +707,26 @@ box-shadow:0 0.4vh 1.2vh rgba(0,0,0,0.03);
     padding: 1.2vw;
 }
 
+
+.avatar_div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.username_div{
+    height: 9vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-evenly;
+}
+
+
+
+
 h4, h3{
     margin: 0;
 }
@@ -722,16 +742,32 @@ h4, h3{
 }
 
 .avatar_d {
-    height: 100% !important;
+    height: 53% !important;
     display: flex;
     align-items: center;
     justify-content: center;
 
 }
 
+
+.avatar_d img{
+    height: 100%;
+
+}
+
+
 .avatar_div img{
     height: 100%;
 
+}
+
+
+.profile_div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content:start;
+    box-sizing: border-box;
 }
 
 

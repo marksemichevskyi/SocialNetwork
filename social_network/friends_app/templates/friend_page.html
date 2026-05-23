@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+    <meta name="csrfToken" content = '{{ csrf_token }}'>
+{% endblock %}
+{% block links %}
+<link rel="stylesheet" href = "{% static 'post_app/css/post.css' %}">
+<link rel ="stylesheet" href="{% static 'friends_app/css/friends.css' %}">
+{% endblock %}
+
+{% block side_panel_content %} 
+ <div class = "user_profile_div">
+        <div class = "profile_div">
+            <div class = "avatar_d">
+                <img src = "{% static 'images/avatar_test.png' %}"> 
+            </div>
+            
+            <div class = "username_div">
+                <span class = "name">{{ friend.pseudonym }}</span>
+                <span class = "username">{{ friend.username }}</span>
+            </div>
+        </div>
+        <div class = "info_div">
+            <div class = "info_slot_div">
+                <span class = "info_number">566</span>
+                <span class = "info_text">Дописи</span>
+            </div>
+            <div class = "info_slot_div" id = "center_info_slot">
+                <span class = "info_number">12.1K</span>
+                <span class = "info_text">Читачі</span>
+            </div>
+            <div class = "info_slot_div">
+                <span class = "info_number">222</span>
+                <span class = "info_text">Друзі</span>
+            </div>
+            
+        </div>
+        <div class="frame_buttons">
+                
+                {% if section == "requests" %}
+                    <button data-url="{% url 'friends_actions' 'accept' friend.id %}" data-action="accept" class="style_button add_friend_button friend-action-btn">Підтвердити</button>
+                    <button data-url="{% url 'friends_actions' 'delete' user.id %}" class="reject_button friend-action-btn">Видалити</button>
+                {% endif %}
+
+            </div>
+    </div>
+{% endblock %}
+{% block content %}
+
+<div class="post_right_column">
+    {% include 'post_list.html' with posts=posts %}
+    
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script src="{% static 'post_app/js/load_post.js' %}"></script>
+    <script src="{% static 'friends_app/js/friends_actions.js' %}"></script>
+
+{% endblock %}
