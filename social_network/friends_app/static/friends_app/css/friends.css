@@ -164,7 +164,13 @@ h2 {
 }
 
 .add_friend_button {
+    display: flex;
     width: clamp(1px, 7.4vw, 111px);
+    text-decoration: none;
+    align-items: center;
+    margin: 0;
+    justify-content: center;
+    font-size: 0.8rem;
 }
 
 .cards , #current-section-list {

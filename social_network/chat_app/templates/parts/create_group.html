@@ -1,0 +1,61 @@
+{% load static %}
+
+    <div class="group_creation form_div">
+        <button type="button" id = 'create_group_close' class="tag_close">&times;</button>
+        <h1>Нова група</h1>
+        <div class = 'group_first'>
+            <div class="search_div" id = "group_search">
+                <input type="text" id="search_members" class="search_bar" placeholder = 'Пошук'>
+                <img src = '{% static "images/search_icon.png" %}'>
+            </div>
+            <p>Вибрано: 0</p>
+            <div class="list_members contacts" >
+                {% for item in friends %}
+                    <div class = 'search_single_contact'>
+                        <input id="checkbox_{{ forloop.counter }}" type="checkbox">
+                        <div class = 'single_contact'>
+                            <img src = '{% static "images/avatar_test.png" %}'>
+                            <h3>{{ item.friend.pseudonym }}</h3>
+                        </div>
+                    </div>    
+                {% endfor%}    
+            </div>
+                <div class = "form_buttons">
+                    <button class = "tag_button_close" id = 'close_form'>Скасувати</button>
+                    <button class = "style_button" id = 'continue_button'>Далі</button>
+                </div>    
+            </div>
+
+
+        <div class = 'group_second disable'>
+            <div class="input_group_name">
+                <label for="group_name">Назва</label>
+                <input type="text" id="group_name" class="search_bar" placeholder = 'Введіть назву'>
+            </div>
+            <div class="group_avatar">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <div class="avatar_buttons">
+                    <button class="add_avatar">
+                        <img src = '{% static "images/add_icon.png" %}'>
+                        <h4>Додайте фото</h4>
+                    </button>
+                    <button class="select_avatar">
+                         <img src = '{% static "images/post_page_icon.png" %}'>   
+                         <h4>Оберіть фото</h4>
+                    </button>
+                </div>
+
+            </div>
+            <div class="members">
+                <p>Учасники</p>
+                <div class="selected_members"></div>
+            </div>
+            <div class = "form_buttons">
+                <button class = "tag_button_close" id = 'go_back'>Назад</button>
+                <button class = "style_button" id = 'create_button'>Створити групу</button>
+            </div>    
+        </div>
+    </div>
+
+
+

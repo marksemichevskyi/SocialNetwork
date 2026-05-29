@@ -78,8 +78,7 @@ class FriendProfileView(LoginRequiredMixin, TemplateView):
         user_id = int(user_id) 
         user = request.user
 
-        if user.id == user_id:
-            print(f"!!! СТОП !!! Ви намагаєтеся виконати дію '{action}' над самим собою (ID {user.id})")
+        if action == 'add' and user.id == user_id:
             return JsonResponse({
                 'success': False, 
                 'error': 'Ви не можете додавати в друзі самого себе!'
@@ -89,8 +88,6 @@ class FriendProfileView(LoginRequiredMixin, TemplateView):
         
         try:
             other_user = get_object_or_404(User, id=user_id)
-            other_user = get_object_or_404(User, id=user_id)
-            user = request.user
             
             if action == 'add':
                 return JsonResponse(add_friend_request(user, other_user))
@@ -113,7 +110,7 @@ class FriendProfileView(LoginRequiredMixin, TemplateView):
                 
                 return JsonResponse(data)
             
-            return JsonResponse({'success': False, 'error': 'Unknown action'}, status=400)
+            return JsonResponse({'success': False, 'error': f'Unknown action: {action}'}, status=400)
 
         except Exception as e:
             print(f"Критична помилка в методі post: {e}")

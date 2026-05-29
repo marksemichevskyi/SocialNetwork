@@ -3,26 +3,23 @@ from ..models import Friendship
 from django.db.models import Q
 
 def add_friend_request(user, other_user):
-    Friendship.objects.get_or_create(from_user=user, to_user=other_user)
+    Friendship.objects.get_or_create(from_user=user, to_user=other_user, defaults={'status': 'pending'})
     return {
         'remove': False,
         'text': 'Очікування'
     }
-  
 
 def accept_friend_request(user, other_user):
-    friendship = Friendship.objects.filter(
-        (Q(from_user=user) & Q(to_user=other_user)) | 
-        (Q(from_user=other_user) & Q(to_user=user))
-    ).first()
+    friendship = Friendship.objects.filter(from_user=other_user, to_user=user).first()
     
     if not friendship:
-        print("=== СТВОРЕННЯ НОВОГО ЗАПИСУ ===")
+        friendship = Friendship.objects.filter(from_user=user, to_user=other_user).first()
+        
+    if not friendship:
         friendship = Friendship.objects.create(
             from_user=other_user, 
             to_user=user, 
-            status='pending',
-            created_at=timezone.now()
+            status='pending'
         )
         
     if not friendship.created_at:
@@ -31,15 +28,12 @@ def accept_friend_request(user, other_user):
     friendship.status = 'accepted'
     friendship.save()
     
-    print(f"=== БАЗА ОНОВЛЕНА: ID {friendship.id} тепер {friendship.status} ===")
-    
     return {
         'remove': True,
         'text': 'Успішно додано в друзі'
     }
 
 def delete_friendship(user, other_user):
-
     friendship = Friendship.objects.filter(
         (Q(from_user=user) & Q(to_user=other_user)) | 
         (Q(from_user=other_user) & Q(to_user=user))
@@ -47,21 +41,30 @@ def delete_friendship(user, other_user):
     
     if friendship:
         friendship.delete()
+        return {'remove': True, 'success': True}
         
-    return {
-        'remove': True
-    }
+    return {'remove': False, 'error': 'Зв\'язок не знайдено'}
 
 def ignore_friendship(user, other_user):
-
-    friendship = Friendship.objects.filter(from_user=other_user, to_user=user).first()
+    friendship = Friendship.objects.filter(
+        (Q(from_user=user) & Q(to_user=other_user)) | 
+        (Q(from_user=other_user) & Q(to_user=user))
+    ).first()
     
     if friendship:
         friendship.status = 'ignored'
+        if not friendship.created_at:
+            friendship.created_at = timezone.now()
         friendship.save()
     else:
-        Friendship.objects.get_or_create(from_user=other_user, to_user=user, defaults={'status': 'ignored'})
+        Friendship.objects.create(
+            from_user=user,  
+            to_user=other_user,   
+            status='ignored',
+            created_at=timezone.now()
+        )
         
     return {
-        'remove': True
+        'remove': True,
+        'success': True
     }

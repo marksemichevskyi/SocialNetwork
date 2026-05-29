@@ -3,7 +3,7 @@
 
 {% for friend in users %}
     <div class="user">
-        <button class="friend_info" data-url="{% url 'friend_page' section friend.id %}">
+        <div class="friend_info" >
             <div class="friend_avatar">
                <img src="{% static 'images/avatar_test.png' %}"> 
             </div>
@@ -11,20 +11,20 @@
                 <h3 class="friend_pseudonym">{{ friend.pseudonym }}</h3>
                 <h4 class="friend_name">{{ friend.username }}</h4>
             </div>
-        </button>
+        </div>
 
         <div class="frame_buttons">
             {% if section == "requests" %}
 
-                <button data-url="{% url 'friends_actions' 'accept' friend.id %}" data-action="accept" class="style_button add_friend_button friend-action-btn">Підтвердити</button>
+                <a href="{% url 'friend_page' section friend.id %}" class="style_button add_friend_button">Підтвердити</a>
                 <button data-url="{% url 'friends_actions' 'delete' friend.id %}" data-action="delete" class="reject_button friend-action-btn">Видалити</button>
     
-            {% elif section == "friends" %}
+             {% elif section == "friends" %}
                 <button class="style_button add_friend_button">Повідомлення</button>
                 <button data-url="{% url 'friends_actions' 'delete' friend.id %}" data-action="delete" class="reject_button friend-action-btn">Видалити</button>
     
             {% elif section == "recommendations" %}
-                <button data-url="{% url 'friends_actions' 'add' friend.id %}" data-action="add" class="style_button add_friend_button friend-action-btn">Додати</button>
+                <a href="{% url 'friend_page' section friend.id %}" class="style_button add_friend_button">Додати</a>
                 <button data-url="{% url 'friends_actions' 'ignore' friend.id %}" data-action="ignore" class="reject_button friend-action-btn">Видалити</button>
             {% endif %}
         </div>

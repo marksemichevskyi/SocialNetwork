@@ -21,17 +21,47 @@
             <img src = '{% static "images/search_icon.png" %}'>
             
         </div>
-        </input>
-        <div class = 'contacts'>
-            {% for item in friends %}
-                <div class = 'single_contact'>
-                    <img src = '{% static "images/avatar_test.png" %}'>
-                    <h3>{{ item.friend.pseudonym }}</h3>
-                </div>
-            {% endfor%}
-        </div>   
+    </input>
+    <div class = 'contacts'>
+        {% for item in friends %}
+        <div class = 'single_contact'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <h3>{{ item.friend.pseudonym }}</h3>
+        </div>
+        
+        {% endfor%}
+        {% for item in friends %}
+        <div class = 'single_contact'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <h3>{{ item.friend.pseudonym }}</h3>
+        </div>
+        
+        {% endfor%}
+        {% for item in friends %}
+        <div class = 'single_contact'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <h3>{{ item.friend.pseudonym }}</h3>
+        </div>
+        
+        {% endfor%}
+        {% for item in friends %}
+        <div class = 'single_contact'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <h3>{{ item.friend.pseudonym }}</h3>
+        </div>
+        
+        {% endfor%}
+        {% for item in friends %}
+        <div class = 'single_contact'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <h3>{{ item.friend.pseudonym }}</h3>
+        </div>
+        
+        {% endfor%}
+    </div>   
 </div> 
 </div> 
+
 {% endblock %}
 
 {% block content %} 
@@ -50,9 +80,9 @@
     <div class = 'chat_messages'>
         <div class = 'message_nav'>
             <span class = 'nav_text'>
-                <img src = '{% static "images/chat_page_icon.png" %}'>
+                <img src = '{% static "images/messages_icon.png" %}'>
                 <h2>Повідомлення</h2>
-            <span>
+            </span>
 
             <button class = 'show_all'>Дивитись всі</button>
 
@@ -60,9 +90,17 @@
 
         <div class = 'last_chat_messages'>
             {% for chat_data in individual_chats %}
-                <div class="chat" data-id="{{ chat_data.chat_id }}" style="border: 2px solid black; padding: 12px; width: max-content; cursor: pointer; margin: 10px;">
-                    <h3>{{ chat_data.other_user.pseudonym }}</h3>
-                </div>
+                <button class = 'created_chat'>
+                    <img src = '{% static "images/avatar_test.png" %}'>
+                    <span class = 'friend_message'>
+                        <h3>{{ chat_data.other_user.pseudonym }}</h3>
+                        <h4 class="latest_message">Привіт! Як справи?</h4>
+                    </span>
+                    <h5 class="message_date">
+                        18:20
+                    </h5>
+                </button>
+                
             {% endfor%}
         </div>
 
@@ -70,17 +108,35 @@
     <div class = 'group_messages'>
         <div class = 'message_nav'>
             <span class = 'nav_text'>
-                <img src= '{% static "images/chat_page_icon.png" %}'>
+                <img src= '{% static "images/messages_icon.png" %}'>
                 <h2>Групові чати</h2>
-            <span>
+            </span>
 
             <button class = 'show_all'>Дивитись всі</button>
+            
+        </div>
 
+        <div class = 'last_group_messages'>
+            {% for chat_data in group_chats %}
+                <button class = 'created_group'>
+                    <img src = '{% static "images/avatar_test.png" %}'>
+                    <span class = 'group_message'>
+                        <h3>{{ chat_data.name }}</h3>
+                        <h4 class="latest_message">Привіт! Як справи?</h4>
+                    </span>
+                    <h5 class="message_date">
+                        18:20
+                    </h5>
+                </button>
+                
+            {% endfor%}
         </div>
     </div>
 </div>
 
-    
+<div id = 'add_group_pop-up' class="pop-up disable">
+    {% include 'parts/create_group.html' %}
+</div>    
 {%endblock%}
 
 {%block scripts%}

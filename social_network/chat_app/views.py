@@ -21,6 +21,17 @@ class ChatView(LoginRequiredMixin, TemplateView):
             })
         context["individual_chats"] = data
         
+        groups = Chat.objects.filter(is_group = True, users = self.request.user)
+        group_data = []
+        for group in groups :
+            group_name = group.name
+            group_data.append({
+
+                "name" : group_name,
+                
+            })
+        context["group_chats"] = group_data
+        
         friends = get_friends_by_section(current_user= self.request.user, section = 'friends')
         print(friends)
         friends_data =[]
