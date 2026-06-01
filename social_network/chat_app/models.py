@@ -11,3 +11,13 @@ class Chat(models.Model):
     
     def __str__(self):
         return f"<Chat: {self.name}>"
+    
+class Message(models.Model):
+    text = models.CharField(max_length=255, blank=True, null=True)
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="messages")
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add = True)
+    readers = models.ManyToManyField(User, related_name="readed_messages")
+
+    def __str__(self):
+        return f"<Message: {self.text}>"

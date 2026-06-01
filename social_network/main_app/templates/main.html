@@ -2,6 +2,8 @@
 {% load static %}
 {% block links %}
     <link rel="stylesheet" href = "{% static 'main_app/css/main.css' %}">
+    <link rel="stylesheet" href = "{% static 'post_app/css/post.css' %}">
+    <link rel="stylesheet" href = "{% static 'post_app/css/add_tag.css' %}">
 {% endblock %}
 
 {% block meta %}
@@ -61,25 +63,34 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'parts/create_post_pannel.html'%}
-    <div class = 'pop-up disable' id = 'username_pop-up'>
-        <div class = 'form_div' id = 'form_username_div'>
-            <h1>Додай деталі про себе</h1>
-            <form id = 'form_username' method = 'post' action= '{% url "set_username" %}'>
-                {{form_username.as_p}}
-                <div class = 'error_container' id = 'username_error_container'></div>
-                <div class = 'button_container'>
+<div class = 'pop-up disable' id = 'username_pop-up'>
+    <div class = 'form_div' id = 'form_username_div'>
+        <h1>Додай деталі про себе</h1>
+        <form id = 'form_username' method = 'post' action= '{% url "set_username" %}'>
+            {{form_username.as_p}}
+            <div class = 'error_container' id = 'username_error_container'></div>
+            <div class = 'button_container'>
                 <button type="submit" class = 'style_button' id = 'continue_button'>Продовжити</button>
-                </div>
-            </form>  
-        </div>
+            </div>
+        </form>  
     </div>
+</div>
 
-    <div class = 'pop-up disable' id = 'post_form_pop-up'>
-        {% include 'parts/post_form.html'%}
-    </div>
+<div class="post_right_column">
+
+    {% include 'parts/create_post_pannel.html' %}
+    {% include 'post_list.html' %}
+ 
+</div>
+<div class="pop-up disable" id = 'post_form_pop-up'>
+    {% include 'parts/post_form.html' %}
+    
+    {% include 'parts/add_tag.html' %}
+
+</div>
 {% endblock %}
 
 {% block scripts %}
     <script src="{% static 'main_app/js/main.js' %}"></script>
+
 {% endblock %}

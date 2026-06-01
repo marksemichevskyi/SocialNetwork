@@ -2,40 +2,12 @@ const chatBtns = document.querySelectorAll(".created_chat")
 const chat = document.querySelector("#chat")
 const notSelectContainer = document.querySelector("#not-select")
 let chatSocket;
+const friendDivs = document.querySelectorAll(".single_contact")
+const csrfToken = document.querySelector("meta[name='csrfToken']").content
+const messages = document.querySelector('#messages')
+const loadLine = document.querySelector("#load-message-line")
+let pageNumber = 1
 
-chatBtns.forEach(btn => {
-    btn.addEventListener('click', ()=>{
-        notSelectContainer.style.display = "none"
-        chat.style.display = "flex"
-        if (chatSocket){
-            chatSocket.close()
-        }
-        let chatId = btn.dataset.id
-        let url = `ws://${window.location.host}/chat/${chatId}/`;
-        chatSocket = new WebSocket(url)
-        chatSocket.onmessage = (event)=>{
-            const data = JSON.parse(event.data)
-            console.log(data);
-            
-        }
-    })
-})
-
-const sendMsg = document.querySelector("#send-msg")
-const msgInput = document.querySelector("#msg-input")
-
-sendMsg.addEventListener("click", ()=>{
-    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-        chatSocket.send(
-            JSON.stringify({
-                "msg": msgInput.value
-            })
-        )
-        msgInput.value = ''
-    } else {
-        console.error("З'єднання WebSocket ще не встановлено або закрите.");
-    }
-})
 
 const createGroupBtn = document.querySelector(".add_group_button")
 const addGropPopUp = document.querySelector("#add_group_pop-up")
@@ -112,3 +84,142 @@ continueBtn.addEventListener("click", () => {
 })
 
 
+
+
+async function loadMessages(chatId){
+    const response = await fetch(
+        `/chat/${chatId}/getMessages/?page=${pageNumber}`,
+        {headers: {'X-Requested-With': 'XMLHttpRequest'}}
+    )
+    const data = await response.json()
+    console.log(data);
+    
+    if (data.success){
+        data.messages.forEach((message)=>{
+            createMessage(message.sender, message.text, message.datetime, false, current_user = message.current_user)
+        })
+    }
+}
+
+function createMessage(sender, text, dateTime, isNew = true, current_user){
+    const dateObj = new Date(dateTime);
+    const formattedTime = dateObj.toLocaleTimeString([], {
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false
+    });
+
+    const newMessage = document.createElement('div')
+    newMessage.classList.add('message')
+    const senderAvatar = document.querySelector(".sender_avatar").dataset.img
+    const messageStatus = document.querySelector(".message_status_image").dataset.img
+    if(sender === current_user){
+        newMessage.classList.add('current_user_message')
+        newMessage.innerHTML = `<div class="message_div">
+        <div class="message_content">
+            <h3>${text}</h3>   
+        </div>
+            <div class ="message_info">
+                <h6>${formattedTime}</h6>
+                <img class = "message_status" src = "${messageStatus}">
+            </div>
+        </div> `
+    }else{
+        newMessage.innerHTML = `
+        <img class = "sender" src = "${senderAvatar}">
+        <div class="message_div">
+        <div class="message_content">
+            <h4>${sender}</h4>
+            <h3>${text}</h3>   
+        </div>
+            <div class ="message_info">
+                <h6>${formattedTime}</h6> 
+                <img class = "message_status" src = "${messageStatus}">
+            </div>
+        </div>`
+    }
+    
+    if(isNew){
+        messages.appendChild(newMessage)
+    }
+    else{
+        messages.insertBefore(newMessage, loadLine.nextElementSibling)
+    }
+}
+
+function openChat(chatId){
+    notSelectContainer.style.display = "none"
+    chat.style.display = "flex"
+    messages.querySelectorAll(".message").forEach((msg) =>{
+        msg.remove()
+    })
+    pageNumber = 1
+    loadMessages(chatId)
+    if (chatSocket){
+        chatSocket.close()
+    }
+    let url = `ws://${window.location.host}/chat/${chatId}`;
+    chatSocket = new WebSocket(url)
+    chatSocket.onmessage = (event)=>{
+        const data = JSON.parse(event.data)
+        console.log(data.message);
+        
+        if (data.message){
+            createMessage(data.message.sender, data.message.text, data.message.datetime)
+        }
+    }
+}
+
+chatBtns.forEach(btn => {
+    btn.addEventListener('click', ()=>{
+        const chatId = btn.getAttribute('data-id') 
+        if (chatId) {
+            chatBtns.forEach(notBtn => {
+                notBtn.classList.remove('selected_contact')
+            }) 
+            btn.classList.add('selected_contact')
+            openChat(chatId)
+        } else {
+            console.error("Помилка: data-id відсутній у кнопки чату", btn)
+        }
+    })
+})
+
+const sendMsg = document.querySelector("#send-msg")
+const msgInput = document.querySelector("#msg-input")
+
+sendMsg.addEventListener("click", ()=>{
+    chatSocket.send(
+        JSON.stringify({
+            "msg": msgInput.value
+        })
+    )
+    msgInput.value = ''
+})
+
+friendDivs.forEach(div => {
+    div.addEventListener('click', async ()=>{
+        const response = await fetch('/chat/create/', {
+            method: "POST",
+            headers: {
+                'X-CSRFToken' : csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            }, 
+            body: JSON.stringify({
+                friend_id: div.dataset.id
+            })
+        })
+        const data = await response.json()
+        if (data.is_new){
+            const newChat = document.createElement('div')
+            newChat.classList.add('chat')
+            newChat.innerHTML = `<h3>${data.friend_pseudonym}</h3>`
+            newChat.dataset.id = data.chat_id
+            newChat.addEventListener('click', ()=>{
+                openChat(data.chat_id)
+            })
+            document.querySelector('#indiv-chats').append(newChat)
+        }
+        openChat(data.chat_id)
+    })
+})

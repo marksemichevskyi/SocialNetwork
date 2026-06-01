@@ -10,12 +10,12 @@
             </div>
             <p>Вибрано: 0</p>
             <div class="list_members contacts" >
-                {% for item in friends %}
+                {% for friend in friends %}
                     <div class = 'search_single_contact'>
                         <input id="checkbox_{{ forloop.counter }}" type="checkbox">
                         <div class = 'single_contact'>
                             <img src = '{% static "images/avatar_test.png" %}'>
-                            <h3>{{ item.friend.pseudonym }}</h3>
+                            <h3>{{ friend.pseudonym }}</h3>
                         </div>
                     </div>    
                 {% endfor%}    

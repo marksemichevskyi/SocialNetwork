@@ -61,4 +61,6 @@
     border-right: 0.2vh solid #CDCED2;
 
 }
-
+#load-post-line {
+    height: 1px;
+}

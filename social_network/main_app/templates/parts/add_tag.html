@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="tag_pop_up disable">
+    <div class="tag_pop_up_content">
+        <div class = 'exit_button_div'>
+
+            <button type="button" class="tag_close">&times;</button>
+        </div>
+        <h1>Додати хештег</h1>
+        <form class="tag_form" method="post" action="{% url 'add_tag' %}">
+            {% csrf_token %}
+            {{ tag_form.as_p }}
+            <div class="tag_form_buttons">
+                <button type="button" class="tag_button_close">Скасувати</button>
+                <button type="submit" class="style_button" id='add_tag_button'>Зберегти</button>
+            </div>
+        </form>
+    </div>
+</div>

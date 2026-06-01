@@ -6,6 +6,10 @@
 <link rel="stylesheet" href = "{% static 'chat_app/css/chat.css' %}">
 {% endblock %}
 
+{% block meta %}
+    <meta name = 'csrfToken' content = '{{ csrf_token }}'>
+{% endblock %}
+
 {% block side_panel_content %}
 <div class = 'chat_side_panel'>
     <button class = 'style_button add_group_button'>
@@ -23,40 +27,11 @@
         </div>
     </input>
     <div class = 'contacts'>
-        {% for item in friends %}
-        <div class = 'single_contact'>
+        {% for friend in friends %}
+        <button class = 'single_contact'data-id="{{ friend.id }}">
             <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ item.friend.pseudonym }}</h3>
-        </div>
-        
-        {% endfor%}
-        {% for item in friends %}
-        <div class = 'single_contact'>
-            <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ item.friend.pseudonym }}</h3>
-        </div>
-        
-        {% endfor%}
-        {% for item in friends %}
-        <div class = 'single_contact'>
-            <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ item.friend.pseudonym }}</h3>
-        </div>
-        
-        {% endfor%}
-        {% for item in friends %}
-        <div class = 'single_contact'>
-            <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ item.friend.pseudonym }}</h3>
-        </div>
-        
-        {% endfor%}
-        {% for item in friends %}
-        <div class = 'single_contact'>
-            <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ item.friend.pseudonym }}</h3>
-        </div>
-        
+            <h3>{{ friend.pseudonym }}</h3>
+        </button>
         {% endfor%}
     </div>   
 </div> 
@@ -65,13 +40,15 @@
 {% endblock %}
 
 {% block content %} 
-<div id="chat" style="display: none; margin: 100px;">
-    <div id="messages"></div>
-    <div id="control-elements">
-        <input type="text" id="msg-input">
-        <button id="send-msg">Send</button>
-    </div>
-</div>
+<div id="chat" style="display: none; ">
+            <div id="messages">
+                <div id="load-message-line"></div>
+            </div>
+            <div id="control-elements">
+                <input type="text" id="msg-input">
+                <button id="send-msg">Send</button>
+            </div>
+        </div>
 <div id="not-select">
     <h1 style="text-align: center;">Почніть нове спілкування</h1>
     <p style="text-align: center;">Оберіть контакт зі списку ліворуч <br> або створіть групу, щоб почати спілкування</p>
@@ -90,7 +67,7 @@
 
         <div class = 'last_chat_messages'>
             {% for chat_data in individual_chats %}
-                <button class = 'created_chat'>
+                <button class = 'created_chat' data-id="{{ chat_data.chat_id }}">
                     <img src = '{% static "images/avatar_test.png" %}'>
                     <span class = 'friend_message'>
                         <h3>{{ chat_data.other_user.pseudonym }}</h3>
@@ -136,9 +113,17 @@
 
 <div id = 'add_group_pop-up' class="pop-up disable">
     {% include 'parts/create_group.html' %}
-</div>    
+</div> 
+
+
+
+<div class = 'sender_avatar' data-img = '{% static "images/avatar_test.png" %}' style = "display : none;"></div>
+<div class="message_status_image" data-img = '{% static "images/message_delivered.png" %}' style = "display : none;"></div>
 {%endblock%}
 
 {%block scripts%}
     <script src = "{% static 'chat_app/js/chat.js' %}"></script>
 {% endblock %}
+
+
+
