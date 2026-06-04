@@ -8,6 +8,7 @@
 
 {% block meta %}
     <meta name = 'csrfToken' content = '{{ csrf_token }}'>
+    <meta name = "current_user" content = '{{ request.user.id }}'>
 {% endblock %}
 
 {% block side_panel_content %}
@@ -23,36 +24,57 @@
         <div class="search_div">
             <input type="text" id="search_contacts" class="search_bar" placeholder = 'Пошук'>
             <img src = '{% static "images/search_icon.png" %}'>
-            
         </div>
-    </input>
-    <div class = 'contacts'>
-        {% for friend in friends %}
-        <button class = 'single_contact'data-id="{{ friend.id }}">
-            <img src = '{% static "images/avatar_test.png" %}'>
-            <h3>{{ friend.pseudonym }}</h3>
-        </button>
-        {% endfor%}
-    </div>   
+        <div class = 'contacts'>
+            {% for friend in friends %}
+            <button class = 'single_contact' data-id="{{ friend.id }}">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <h3>
+                    {% if friend.profile.pseudonym %}
+                    {{ friend.profile.pseudonym }}
+                    {% else %}
+                    Користувач
+                    {% endif %}
+                </h3>
+            </button>
+            {% endfor %}
+        </div>   
+    </div>
 </div> 
-</div> 
-
 {% endblock %}
 
 {% block content %} 
 <div id="chat" style="display: none; ">
-            <div id="messages">
-                <div id="load-message-line"></div>
-            </div>
-            <div id="control-elements">
-                <input type="text" id="msg-input">
-                <button id="send-msg">Send</button>
-            </div>
+    <div class="chat_header">
+        <button class = 'exit_chat_button'>
+            <img src = '{% static "images/exit_chat_icon.png" %}'>
+        </button>
+
+        <div class = 'chat_info'>
+            <img src = '{% static "images/avatar_test.png" %}'>
+            <div class = "chat_name"></div>
         </div>
+
+        <button class = "options">
+            <img src = '{% static "images/options_icon.png" %}'>
+        </button>
+    </div>
+    <div id = "messages">
+        <div id = "load-message-line"></div>
+    </div>
+    <div id="control-elements">
+        <input type="text" id="msg-input" placeholder = "Повідомлення">
+        <button id="send-msg">
+            <img src = '{% static "images/send_icon.png" %}'>
+        </button>
+    </div>
+</div>
+
 <div id="not-select">
     <h1 style="text-align: center;">Почніть нове спілкування</h1>
     <p style="text-align: center;">Оберіть контакт зі списку ліворуч <br> або створіть групу, щоб почати спілкування</p>
 </div>
+
 <div class = 'block_messages'>
     <div class = 'chat_messages'>
         <div class = 'message_nav'>
@@ -60,37 +82,41 @@
                 <img src = '{% static "images/messages_icon.png" %}'>
                 <h2>Повідомлення</h2>
             </span>
-
             <button class = 'show_all'>Дивитись всі</button>
-
         </div>
 
         <div class = 'last_chat_messages'>
             {% for chat_data in individual_chats %}
                 <button class = 'created_chat' data-id="{{ chat_data.chat_id }}">
                     <img src = '{% static "images/avatar_test.png" %}'>
-                    <span class = 'friend_message'>
-                        <h3>{{ chat_data.other_user.pseudonym }}</h3>
-                        <h4 class="latest_message">Привіт! Як справи?</h4>
-                    </span>
-                    <h5 class="message_date">
-                        18:20
-                    </h5>
+                    <div class = 'friend_message'>
+                        <h3>
+                            {% if chat_data.other_user.profile.pseudonym %}
+                                {{ chat_data.other_user.profile.pseudonym }}
+                            {% else %}
+                                Користувач
+                            {% endif %}
+                        </h3>
+                        <h4 class="latest_message">
+                            {% if chat_data.latest_message.text %}
+                                {{ chat_data.latest_message.text }}
+                            {% else %}
+                                Повідомлень нема
+                            {% endif %}</h4>
+                    </div>
+                    <h5 class="message_date">{{ chat_data.latest_time }}</h5>
                 </button>
-                
-            {% endfor%}
+            {% endfor %}
         </div>
-
     </div>
+
     <div class = 'group_messages'>
         <div class = 'message_nav'>
             <span class = 'nav_text'>
                 <img src= '{% static "images/messages_icon.png" %}'>
                 <h2>Групові чати</h2>
             </span>
-
             <button class = 'show_all'>Дивитись всі</button>
-            
         </div>
 
         <div class = 'last_group_messages'>
@@ -101,12 +127,9 @@
                         <h3>{{ chat_data.name }}</h3>
                         <h4 class="latest_message">Привіт! Як справи?</h4>
                     </span>
-                    <h5 class="message_date">
-                        18:20
-                    </h5>
+                    <h5 class="message_date">18:20</h5>
                 </button>
-                
-            {% endfor%}
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -115,15 +138,10 @@
     {% include 'parts/create_group.html' %}
 </div> 
 
-
-
 <div class = 'sender_avatar' data-img = '{% static "images/avatar_test.png" %}' style = "display : none;"></div>
 <div class="message_status_image" data-img = '{% static "images/message_delivered.png" %}' style = "display : none;"></div>
-{%endblock%}
-
-{%block scripts%}
-    <script src = "{% static 'chat_app/js/chat.js' %}"></script>
 {% endblock %}
 
-
-
+{% block scripts %}
+    <script src = "{% static 'chat_app/js/chat.js' %}"></script>
+{% endblock %}

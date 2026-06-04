@@ -2,12 +2,14 @@ const chatBtns = document.querySelectorAll(".created_chat")
 const chat = document.querySelector("#chat")
 const notSelectContainer = document.querySelector("#not-select")
 let chatSocket;
+let activeChatId = null
 const friendDivs = document.querySelectorAll(".single_contact")
 const csrfToken = document.querySelector("meta[name='csrfToken']").content
 const messages = document.querySelector('#messages')
 const loadLine = document.querySelector("#load-message-line")
 let pageNumber = 1
 
+const currentUserId = document.querySelector("meta[name='current_user']").content
 
 const createGroupBtn = document.querySelector(".add_group_button")
 const addGropPopUp = document.querySelector("#add_group_pop-up")
@@ -16,6 +18,9 @@ const grouptFirst = document.querySelector(".group_first")
 const grouptSecond = document.querySelector(".group_second")
 const closeBtn= document.querySelector("#close_form")
 const goBackBtn = document.querySelector("#go_back")
+
+const chatName = document.querySelector(".chat_name")
+
 
 goBackBtn.addEventListener("click" , ()=> {
     
@@ -74,7 +79,7 @@ continueBtn.addEventListener("click", () => {
     membersData.forEach(name => {
         groupMembers.innerHTML += `
         <div class='search_single_contact'>
-            <button type="button">#</button>
+            <button type="button"><img src='/static/images/bin_icon.png'></button>
             <div class='single_contact'>
                 <img src='/static/images/avatar_test.png'>
                 <h3>${name}</h3>
@@ -94,26 +99,35 @@ async function loadMessages(chatId){
     const data = await response.json()
     console.log(data);
     
-    if (data.success){
+    if (data.success && data.messages.length > 0){
+        const latestMessage = data.messages[0];
+        getLastMessage(chatId, latestMessage.text, latestMessage.datetime, latestMessage.message_id);
+
         data.messages.forEach((message)=>{
-            createMessage(message.sender, message.text, message.datetime, false, current_user = message.current_user)
-        })
+            createMessage(
+                message.sender_pseudonym, 
+                message.sender_id, 
+                message.text, 
+                message.datetime, 
+                false, 
+                message.current_user
+            );
+        });
     }
 }
 
-function createMessage(sender, text, dateTime, isNew = true, current_user){
+function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true, current_user){
     const dateObj = new Date(dateTime);
-    const formattedTime = dateObj.toLocaleTimeString([], {
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false
-    });
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}`;
 
     const newMessage = document.createElement('div')
     newMessage.classList.add('message')
     const senderAvatar = document.querySelector(".sender_avatar").dataset.img
     const messageStatus = document.querySelector(".message_status_image").dataset.img
-    if(sender === current_user){
+    
+    if (String(sender_id) === String(current_user)){
         newMessage.classList.add('current_user_message')
         newMessage.innerHTML = `<div class="message_div">
         <div class="message_content">
@@ -124,12 +138,12 @@ function createMessage(sender, text, dateTime, isNew = true, current_user){
                 <img class = "message_status" src = "${messageStatus}">
             </div>
         </div> `
-    }else{
+    } else {
         newMessage.innerHTML = `
         <img class = "sender" src = "${senderAvatar}">
         <div class="message_div">
         <div class="message_content">
-            <h4>${sender}</h4>
+            <h4>${sender_pseudonym}</h4>
             <h3>${text}</h3>   
         </div>
             <div class ="message_info">
@@ -141,15 +155,50 @@ function createMessage(sender, text, dateTime, isNew = true, current_user){
     
     if(isNew){
         messages.appendChild(newMessage)
+    } else {
+        loadLine.insertAdjacentElement('afterend', newMessage);
     }
-    else{
-        messages.insertBefore(newMessage, loadLine.nextElementSibling)
+}
+function getLastMessage(chatId, messageText, messageDate, messageId) {
+    const chatBtn = document.querySelector(`.created_chat[data-id="${chatId}"]`);
+    
+    if (chatBtn) {
+        const textElement = chatBtn.querySelector('.latest_message');
+        if (textElement) {
+            textElement.textContent = messageText;
+        }
+
+        const dateElement = chatBtn.querySelector('.message_date');
+        if (dateElement && messageDate) {
+            const dateObj = new Date(messageDate);
+            const hours = String(dateObj.getHours()).padStart(2, '0');
+            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+            dateElement.textContent = `${hours}:${minutes}`;
+        }
     }
 }
 
+
 function openChat(chatId){
+
+    chatName.innerHTML = ""
+    chatBtns.forEach(chatBtn => {
+        if(chatBtn.getAttribute('data-id') == chatId){
+            chatBtns.forEach(notBtn => {
+                notBtn.classList.remove('selected_contact')
+            }) 
+            chatBtn.classList.add('selected_contact')
+        }
+    });
+    
+    const selectedContact = document.querySelector('.selected_contact')
+    const selectedContactName = selectedContact.querySelector('h3').textContent
+    
     notSelectContainer.style.display = "none"
     chat.style.display = "flex"
+    chatName.innerHTML = `
+        <h1>${selectedContactName}</h1>
+        <h3>в мережі</h3>`
     messages.querySelectorAll(".message").forEach((msg) =>{
         msg.remove()
     })
@@ -165,7 +214,18 @@ function openChat(chatId){
         console.log(data.message);
         
         if (data.message){
-            createMessage(data.message.sender, data.message.text, data.message.datetime)
+
+            createMessage(
+                data.message.sender_pseudonym, 
+                data.message.sender_id, 
+                data.message.text, 
+                data.message.datetime, 
+                true,
+                currentUserId 
+                )
+            
+            getLastMessage(chatId, data.message.text, data.message.datetime, data.message.message_id)
+
         }
     }
 }
@@ -174,10 +234,10 @@ chatBtns.forEach(btn => {
     btn.addEventListener('click', ()=>{
         const chatId = btn.getAttribute('data-id') 
         if (chatId) {
-            chatBtns.forEach(notBtn => {
-                notBtn.classList.remove('selected_contact')
-            }) 
-            btn.classList.add('selected_contact')
+            // chatBtns.forEach(notBtn => {
+            //     notBtn.classList.remove('selected_contact')
+            // }) 
+            // btn.classList.add('selected_contact')
             openChat(chatId)
         } else {
             console.error("Помилка: data-id відсутній у кнопки чату", btn)

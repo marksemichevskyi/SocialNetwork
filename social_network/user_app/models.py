@@ -30,14 +30,9 @@ class User (AbstractUser):
         blank = True,
         null= True,
     )
-    pseudonym = models.CharField(
-        max_length= 150,
-        unique= False,
-        blank = True,
-        null= True,
-        
-    )
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
+    
     

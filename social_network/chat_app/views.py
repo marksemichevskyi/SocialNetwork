@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from user_app.models import User
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.utils.timezone import localtime
 import json
 
 # Create your views here.
@@ -20,13 +21,17 @@ class ChatView(LoginRequiredMixin, TemplateView):
         data = []
         for chat in chats:
             other_user = chat.users.exclude(id = self.request.user.id).first()
+            latest_message = chat.messages.order_by('-created_at').first()
             data.append({
                 "chat_id": chat.id,
-                "other_user":  other_user
+                "other_user":  other_user,
+                "latest_time": localtime(latest_message.created_at).strftime("%H:%M") if latest_message else "",
+                "latest_message": latest_message
             })
         context["individual_chats"] = data
 
         context["friends"] = get_friends_by_section(current_user = self.request.user, section = "friends")
+        
         return context
     
 class CreateChatView(LoginRequiredMixin, View): 
@@ -42,8 +47,8 @@ class CreateChatView(LoginRequiredMixin, View):
             chat.users.set([request.user, friend])
             is_new_chat = True  
         print(chat)
-        return JsonResponse({ "chat_id" : chat.id, "friend_pseudonym" : friend.pseudonym, 'is_new': is_new_chat})    
-    
+        friend_pseudonym = friend.profile.pseudonym if hasattr(friend, 'profile') else friend.email
+        return JsonResponse({ "chat_id" : chat.id, "friend_pseudonym" : friend_pseudonym, 'is_new': is_new_chat})    
     
 class GetMessagesView(View):
     def get(self, request, chat_id, *args, **kwargs):
@@ -58,11 +63,17 @@ class GetMessagesView(View):
             else:
                 message_data_list = []
                 for message in message_list:
+                    sender_pseudonym = message.sender.profile.pseudonym if hasattr(message.sender, 'profile') else "Користувач"
+                    if not sender_pseudonym:
+                        sender_pseudonym = "Користувач"
+
                     message_data_list.append({
-                        'sender': message.sender.pseudonym,
+                        'sender_pseudonym': sender_pseudonym,
+                        'sender_id' : message.sender.id,
                         'text': message.text,
-                        'datetime': message.created_at.isoformat(),
-                        'current_user': self.request.user.pseudonym
+                        'datetime': localtime(message.created_at).isoformat(), 
+                        'current_user': self.request.user.id,
+                        'message_id': message.chat_id
                     })
                 return JsonResponse({
                     "success" : True,

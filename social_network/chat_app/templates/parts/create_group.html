@@ -15,7 +15,12 @@
                         <input id="checkbox_{{ forloop.counter }}" type="checkbox">
                         <div class = 'single_contact'>
                             <img src = '{% static "images/avatar_test.png" %}'>
-                            <h3>{{ friend.pseudonym }}</h3>
+                            <h3>{% if friend.profile.pseudonym %}
+                                    {{ friend.profile.pseudonym }}
+                                {% else %}
+                                    Користувач
+                                {% endif %}
+                            </h3>
                         </div>
                     </div>    
                 {% endfor%}    

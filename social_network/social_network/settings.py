@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'friends_app',
     'main_app',
     'chat_app',
+    'profile_app'
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,30 @@ ASGI_APPLICATION = 'social_network.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+from sshtunnel import SSHTunnelForwarder
+
+
+server = SSHTunnelForwarder(
+    ('ssh.pythonanywhere.com', 22),
+    ssh_username="WorldITSocialNetwork",      
+    ssh_password="oL4qhR8vzO9p",          
+    remote_bind_address=('WorldITSocialNetwork-5274.postgres.pythonanywhere-services.com', 15274),
+    local_bind_address=('127.0.0.1', 5435)
+)
+
+server.start()
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'data',                
+#         'USER': 'super',                 
+#         'PASSWORD': 'kC9gN3bqA',            
+#         'HOST': '127.0.0.1',                
+#         'PORT': '5435',                   
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -111,11 +136,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+USE_TZ = True  
 
-USE_I18N = True
-
-USE_TZ = True
+# Змініть 'UTC' на європейський/київський час
+TIME_ZONE = 'Europe/Kyiv'
 
 
 # Static files (CSS, JavaScript, Images)

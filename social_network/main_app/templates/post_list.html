@@ -13,7 +13,7 @@
                         <img src="{% static 'images/avatar_test.png' %}">
                     </div>
 
-                    <h4>{{ post.author.pseudonym }}</h4>
+                    <h4>{{ post.author.profile.pseudonym }}</h4>
 
                 </div>
 
@@ -38,10 +38,12 @@
                 </div>
 
                 <div class="post_image_div">
+                    {%if post %}
+                        {% for image in post.images.all %}
+                            <img src="{{ image.compressed.url }}">
+                        {% endfor %}
+                    {% endif %}
 
-                    {% for image in post.images.all %}
-                        <img src="{{ image.compressed.url }}">
-                    {% endfor %}
 
                 </div>
 

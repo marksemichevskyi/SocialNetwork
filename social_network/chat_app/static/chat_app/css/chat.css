@@ -18,7 +18,7 @@
     flex-direction: column;
     padding: 4%;
     gap: clamp(1px,3vh,25px);
-    max-height: clamp(1px, 78.9vh, 640px);
+    height: clamp(1px, 78.9vh, 640px);
      
 }
 
@@ -196,13 +196,13 @@ h3{
     align-items: start;
     margin: 0;
     width: 100%;
-    height: clamp(1px,8.4vh,64px);
+    height: clamp(1px,6.9vh,64px);
     gap: clamp(1px,2vh,14px);
     box-sizing: border-box;
     padding-left: clamp(1px,1vw,16px);
     padding-right: clamp(1px,1vw,16px);
-    padding-top: 2%;
-    padding-bottom: 2%;
+    padding-top: 1%;
+    padding-bottom: 1%;
     border: none;
     outline: none;
     box-shadow: none;
@@ -214,30 +214,34 @@ h3{
 }
 
 h4 {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 100;
+    width:fit-content;
+    justify-self: left;
+    margin-right: auto;
 }
 
 .friend_message {
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
-    
+    justify-content: space-between;
+    height: 90%;
 }
 
 .friend_message h3 {
-    font-size: 1.4rem;
+    font-size: 1rem;
+    font-weight: bold !important;
 
 }
 
 h5 {
     display: flex;
-    right: 0;
-    left: 35%;
     position: relative;
     font-weight: 100;
-    margin: 0;
     color: #81818D;
+    justify-self: right;
+    margin-left: auto;
+    margin-top: 0;
 }
 
 .group_creation {
@@ -409,6 +413,9 @@ h5 {
     font-size: 0.9rem;
 }
 
+.single_contact img{
+    height: 100%;
+}
 
 .selected_contact{
     background-color: #E9E5EE;
@@ -419,6 +426,7 @@ h5 {
     flex-direction: column;
     justify-content: end;
     padding: clamp(1px, 2.15vh , 16px ) clamp(1px, 1.03vw , 16px );
+    
 }
 
 
@@ -512,3 +520,104 @@ h5 {
     
 }
 
+
+#control-elements {
+    display: flex;
+    flex-direction: row;
+    height: clamp(1px,5.8vh,42px);
+    align-items: center;
+    gap: clamp(1px,1.5vw,24px);
+}
+
+#msg-input {
+    height: 100%;
+    width: 100%;
+    border-radius: 1.2vh;
+    margin: 0;
+}
+
+#send-msg {
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    background-color: white;
+    width: clamp(1px,2.4vw,38px);
+
+}
+
+#send-msg img {
+    height: 92%;
+    
+}
+
+.chat_header {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: clamp(1px,7.7vh,58px);
+    justify-self: flex-start;
+    margin-bottom: auto;
+    align-items: center;
+    gap: clamp(1px,1.5vw,24px);
+    border-bottom: 1px solid #CDCED2;
+    flex-shrink: 0;
+}
+
+
+.chat_info {
+    height: 88%;
+    display: flex;
+    flex-direction: row;
+    gap: clamp(1px, 1.47vh , 11px );
+    justify-self: start;
+    margin-bottom: auto;
+}
+
+.chat_info img{
+    height: clamp(1px, 6.1vh , 46px );
+    justify-self: start;
+    margin-bottom: auto;
+}
+
+
+.chat_name h1 {
+    font-size: 1.5rem;
+    font-weight: 200;
+}
+
+.chat_name h3 {
+    font-size: 0.9rem;
+    color: #81818D;
+}
+
+.exit_chat_button img {
+    height: clamp(1px,2.6vh,20px);
+}
+.exit_chat_button{
+    padding: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    cursor: pointer;
+}
+
+
+
+.options img {
+    height: clamp(1px,2.6vh,20px);
+
+}
+
+.options {
+    justify-self: right;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    cursor: pointer;
+}

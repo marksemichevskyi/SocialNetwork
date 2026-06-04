@@ -17,8 +17,22 @@
                 <img src = "{% static 'images/avatar_test.png' %}"> 
             </div>
             <div class = "username_div">
-                <span class = "name">Lina Li</span>
-                <span class = "username">@thelili</span>
+                <div class = "username_div">
+                <span class = "name">
+                    {% if request.user.profile.pseudonym %}
+                        {{ request.user.profile.pseudonym }}
+                    {% else %}
+                        Користувач
+                    {% endif %}
+                </span>
+                <span class = "username">
+                    {% if request.user.username %}
+                        {{ request.user.username }}
+                    {% else %}
+                        @id{{ request.user.id }}
+                    {% endif %}
+                </span>
+            </div>
             </div>
         </div>
         <div class = "info_div">

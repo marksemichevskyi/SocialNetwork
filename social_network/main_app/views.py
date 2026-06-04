@@ -52,21 +52,20 @@ class PostListView(LoginRequiredMixin, ListView):
                 })
         return super().get(request, *args, **kwargs)
     
-class UsernameView(View):
+class UsernameView(LoginRequiredMixin, View): 
     def get(self, request):
         user = request.user
-        if not user.username:
-            return JsonResponse({
-                "needs_profile": True
-            })
-        elif user.username.strip() == '@':
-            return JsonResponse({
-                "needs_profile": True
-            })
-        else:
-            return JsonResponse({
-                "needs_profile": False
-            })
+
+        if not hasattr(user, 'profile'):
+            return JsonResponse({"needs_profile": True})
+            
+
+        pseudonym = user.profile.pseudonym
+        
+        if not pseudonym or pseudonym.strip() in ['', '@']:
+            return JsonResponse({"needs_profile": True})
+            
+        return JsonResponse({"needs_profile": False})
 
     
     def post(self, request):

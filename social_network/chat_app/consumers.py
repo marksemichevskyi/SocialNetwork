@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
 from .models import *
+from django.utils.timezone import localtime
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -49,12 +50,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def save_message(self, text):
         user = self.scope.get("user")
-        new_message = Message.objects.create(text = text, chat_id=self.chat_id, sender=user)
+        new_message = Message.objects.create(text=text, chat_id=self.chat_id, sender=user)
         return {
-            'sender': getattr(new_message.sender, 'pseudonym', new_message.sender.username),
+            'sender_pseudonym': getattr(new_message.sender, 'pseudonym', new_message.sender.username),
+            'sender_id' :  new_message.sender.id,
             'text': new_message.text,
-            'datetime': new_message.created_at.isoformat(),
+            'datetime': localtime(new_message.created_at).isoformat(),
+            'message_id': self.chat_id,
         }
-        
+            
+    # @database_sync_to_async
+    # def save_message(self, text):
+    #     user = self.scope.get("user")
+
+    #     new_message = Message.objects.create(
+    #         text=text,
+    #         chat_id=self.chat_id,
+    #         sender=user
+    #     )
+
+    #     sender_name = new_message.sender.pseudonym or new_message.sender.username
+
+    #     return {
+    #         'sender': sender_name,
+    #         'text': new_message.text,
+    #         'datetime': localtime(new_message.created_at).isoformat(),
+    #         'current_user': sender_name,
+    #     }
+
     async def send_message(self, data):
         await self.send(text_data=json.dumps(data))

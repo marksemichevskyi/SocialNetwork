@@ -1,41 +1,63 @@
 from django import forms
-from user_app.models import *
+from user_app.models import User
+from profile_app.models import Profile
+
 from post_app.forms import *
 
 class UsernameForm(forms.ModelForm):
+    pseudonym = forms.CharField(
+        max_length=150,
+        required=True,
+        label='Псевдонім автора',
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Введіть Псевдонім автора'
+        })
+    )
 
     class Meta:
         model = User
-        fields = ('pseudonym', 'username')
+        fields = ('username',) 
         widgets = {
-            'pseudonym': forms.TextInput(attrs= {
-                'placeholder': 'Введіть Псевдонім автора'
-            }),
-            'username': forms.TextInput(attrs= {
+            'username': forms.TextInput(attrs={
                 'placeholder': '@'
             })
         }
-        
         labels = {
-            'pseudonym': 'Псевдонім автора ',
             'username': 'Ім’я користувача'
         }
-         
-    def clean(self):
-        data = super().clean()
-        username = data.get('username')
-        if User.objects.filter(username = username).exists():
-            raise forms.ValidationError(message = 'Таке ім’я вже існує')
-        return data
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and hasattr(self.instance, 'profile'):
+            self.fields['pseudonym'].initial = self.instance.profile.pseudonym
+
     def clean_username(self):
-        value = self.cleaned_data['username']
+        value = self.cleaned_data.get('username')
+        if not value:
+            return value
+            
         if not value.startswith('@'):
             value = '@' + value
+            
+        queryset = User.objects.filter(username=value)
+        if self.instance.pk:
+            queryset = queryset.exclude(pk=self.instance.pk)
+            
+        if queryset.exists():
+            raise forms.ValidationError('Таке ім’я вже існує')
+            
         return value
-    
-    def save(self, commit = True):
-        user = super().save(commit = False)
-        # user.set_password(self.cleaned_data["password"])
-        user.save()
+
+    def save(self, commit=True):
+
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        
+        profile, created = Profile.objects.get_or_create(user=user)
+        profile.pseudonym = self.cleaned_data.get('pseudonym')
+        
+        if commit:
+            profile.save()
+            
         return user
