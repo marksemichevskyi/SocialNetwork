@@ -23,7 +23,7 @@ class PostView(LoginRequiredMixin, TemplateView):
 
         context['tags'] = PostTag.objects.all()
 
-        context['posts'] = Post.objects.all().order_by('-created_at')[:5] 
+        context['posts'] = Post.objects.all().filter(author_id=self.request.user.id).order_by('-created_at')[:5] 
 
         return context
 

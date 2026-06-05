@@ -25,7 +25,7 @@ class ChatView(LoginRequiredMixin, TemplateView):
             data.append({
                 "chat_id": chat.id,
                 "other_user":  other_user,
-                "latest_time": localtime(latest_message.created_at).strftime("%H:%M") if latest_message else "",
+                "latest_time": localtime(latest_message.created_at).isoformat() if latest_message else "",
                 "latest_message": latest_message
             })
         context["individual_chats"] = data
@@ -73,7 +73,8 @@ class GetMessagesView(View):
                         'text': message.text,
                         'datetime': localtime(message.created_at).isoformat(), 
                         'current_user': self.request.user.id,
-                        'message_id': message.chat_id
+                        'message_id': message.chat_id,
+                        'date': message.created_at.date(),
                     })
                 return JsonResponse({
                     "success" : True,

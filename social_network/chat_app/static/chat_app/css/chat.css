@@ -1,3 +1,29 @@
+
+html {
+    scrollbar-color:#543C52 #E9E5EE;
+
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+
+html::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+
+html::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+}
+
+html::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+}
 .content{
     display:flex;
     flex-direction: row;
@@ -76,7 +102,10 @@
     background-color: #ffffff;
     height: 49%;
     width: 100%;
+    box-sizing: border-box;
+
 }
+
 
 .block_messages {
     width: 40%;
@@ -213,12 +242,16 @@ h3{
     height: 100%;
 }
 
-h4 {
+.latest_message {
     font-size: 0.7rem;
     font-weight: 100;
     width:fit-content;
     justify-self: left;
     margin-right: auto;
+    max-width: 90%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .friend_message {
@@ -226,6 +259,8 @@ h4 {
     flex-direction: column;
     justify-content: space-between;
     height: 90%;
+    box-sizing: border-box;
+    width: 70%;
 }
 
 .friend_message h3 {
@@ -465,6 +500,7 @@ h5 {
     justify-content: start;
     gap:  clamp(1px, 0.7vw , 11px );
     width: fit-content;
+    max-width: 80%;
     padding: clamp(1px, 1.47vh , 11px ) clamp(1px, 0.7vw , 11px );
     border-width: 0.2vh;
     border-radius: 1vh;
@@ -472,7 +508,6 @@ h5 {
     box-sizing: border-box;
     border-color: #D8D3DE;
     background-color: #ffffff;
-    
 }
 
 .message_content {
@@ -487,12 +522,13 @@ h5 {
 .message_content h4 {
     color:#543C52 ;
     font-size: 0.65rem;
-
+    font-weight: 100;
 }
 
 .message div h3 {
     font-size: 0.9rem;
     color: #070A1C;
+    word-break: break-all;
 }
 
 .message_info {
@@ -527,6 +563,7 @@ h5 {
     height: clamp(1px,5.8vh,42px);
     align-items: center;
     gap: clamp(1px,1.5vw,24px);
+    padding-top: clamp(1px,1.5vh,11px);
 }
 
 #msg-input {
@@ -621,3 +658,65 @@ h5 {
     background: none;
     cursor: pointer;
 }
+
+.message-date { 
+    
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.9rem;
+    background-color: #E9E5EE;
+    border-radius: 0.6vh;
+    box-sizing: border-box;
+    padding: clamp(1px, 0.6vh, 5px) clamp(1px, 0.3vw, 5px);
+}
+
+.last_chat_messages {
+    max-height: clamp(1px,34.5vh,251.7px);
+    overflow: hidden;
+}
+/* 
+
+.custom_checkbox_wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+}
+
+.custom_checkbox_wrapper input[type="checkbox"] {
+    display: flex;
+    position: absolute;
+    justify-self: end;
+
+    align-self: center;
+    opacity: 0;
+}
+
+.custom_checkbox_wrapper .custom_checkbox_icon {
+    position: absolute;
+    justify-self: end;
+    margin-top: 20px;
+    margin-left: 100px;
+    align-self: center;
+    display: inline-block;
+    width: clamp(1px,2.6vh,20px);
+    height: clamp(1px,2.6vh,20px);
+    background-image: url('/static/images/checkbox.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-image 0.1s ease-in-out;
+}
+
+.custom_checkbox_wrapper input[type="checkbox"]:checked + .custom_checkbox_icon {
+    position: absolute;
+    justify-self: end;
+    margin: auto;
+    align-self: center;
+    background-image: url('/static/images/checkbox_selected.png');
+}
+.custom_checkbox_wrapper:hover .custom_checkbox_icon {
+    filter: brightness(0.9);
+} */

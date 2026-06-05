@@ -8,9 +8,8 @@ const csrfToken = document.querySelector("meta[name='csrfToken']").content
 const messages = document.querySelector('#messages')
 const loadLine = document.querySelector("#load-message-line")
 let pageNumber = 1
-
+let observer = null
 const currentUserId = document.querySelector("meta[name='current_user']").content
-
 const createGroupBtn = document.querySelector(".add_group_button")
 const addGropPopUp = document.querySelector("#add_group_pop-up")
 const groupClosebtn = document.querySelector("#create_group_close")
@@ -97,8 +96,7 @@ async function loadMessages(chatId){
         {headers: {'X-Requested-With': 'XMLHttpRequest'}}
     )
     const data = await response.json()
-    console.log(data);
-    
+    console.log("Дані з бекенду:", data.messages)
     if (data.success && data.messages.length > 0){
         const latestMessage = data.messages[0];
         getLastMessage(chatId, latestMessage.text, latestMessage.datetime, latestMessage.message_id);
@@ -110,14 +108,16 @@ async function loadMessages(chatId){
                 message.text, 
                 message.datetime, 
                 false, 
-                message.current_user
+                message.current_user,
+                message.date
             );
         });
     }
 }
 
-function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true, current_user){
+function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true, current_user, date){
     const dateObj = new Date(dateTime);
+    
     const hours = String(dateObj.getHours()).padStart(2, '0');
     const minutes = String(dateObj.getMinutes()).padStart(2, '0');
     const formattedTime = `${hours}:${minutes}`;
@@ -151,10 +151,13 @@ function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true
                 <img class = "message_status" src = "${messageStatus}">
             </div>
         </div>`
-    }
+
     
+    }
+    newMessage.dataset.date = date
     if(isNew){
         messages.appendChild(newMessage)
+        scrollToBottom(true)
     } else {
         loadLine.insertAdjacentElement('afterend', newMessage);
     }
@@ -170,16 +173,14 @@ function getLastMessage(chatId, messageText, messageDate, messageId) {
 
         const dateElement = chatBtn.querySelector('.message_date');
         if (dateElement && messageDate) {
-            const dateObj = new Date(messageDate);
-            const hours = String(dateObj.getHours()).padStart(2, '0');
-            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-            dateElement.textContent = `${hours}:${minutes}`;
+            dateElement.textContent = formatChatBadgeDate(messageDate);
+            dateElement.dataset.rawDate = messageDate;
         }
     }
 }
 
 
-function openChat(chatId){
+async function openChat(chatId) { // 1. Додали async сюди
 
     chatName.innerHTML = ""
     chatBtns.forEach(chatBtn => {
@@ -199,21 +200,33 @@ function openChat(chatId){
     chatName.innerHTML = `
         <h1>${selectedContactName}</h1>
         <h3>в мережі</h3>`
-    messages.querySelectorAll(".message").forEach((msg) =>{
+
+    messages.querySelectorAll(".message").forEach((msg) => {
         msg.remove()
     })
+
+    messages.querySelectorAll(".message-date").forEach((date) => {
+        date.remove()
+    })
+
     pageNumber = 1
-    loadMessages(chatId)
+
+    await loadMessages(chatId) 
+
+    createDateMessage() 
+
     if (chatSocket){
         chatSocket.close()
     }
+    
     let url = `ws://${window.location.host}/chat/${chatId}`;
     chatSocket = new WebSocket(url)
-    chatSocket.onmessage = (event)=>{
+    
+    chatSocket.onmessage = (event) => {
         const data = JSON.parse(event.data)
-        console.log(data.message);
         
-        if (data.message){
+        if (data.message) {
+            const currentLocalDate = new Date().toISOString().split('T')[0];
 
             createMessage(
                 data.message.sender_pseudonym, 
@@ -221,13 +234,15 @@ function openChat(chatId){
                 data.message.text, 
                 data.message.datetime, 
                 true,
-                currentUserId 
-                )
+                currentUserId,
+                currentLocalDate
+            )
             
             getLastMessage(chatId, data.message.text, data.message.datetime, data.message.message_id)
-
+            createDateMessage() 
+            scrollToBottom(true)
         }
-    }
+    }  
 }
 
 chatBtns.forEach(btn => {
@@ -247,6 +262,23 @@ chatBtns.forEach(btn => {
 
 const sendMsg = document.querySelector("#send-msg")
 const msgInput = document.querySelector("#msg-input")
+
+
+
+msgInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault()
+
+        chatSocket.send(
+            JSON.stringify({
+                msg: msgInput.value
+            })
+        );
+
+        msgInput.value = ''
+    }
+});
+
 
 sendMsg.addEventListener("click", ()=>{
     chatSocket.send(
@@ -283,3 +315,79 @@ friendDivs.forEach(div => {
         openChat(data.chat_id)
     })
 })
+
+function createDateMessage(){
+    const messageDates = document.querySelectorAll('.message-date')
+    messageDates.forEach(date => date.remove())
+    
+    const messageList = document.querySelectorAll('.message')
+    let previousMessageDate = null
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    const dateFormatter = new Intl.DateTimeFormat('uk-UA', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
+    messageList.forEach(message => {
+        const msgDate = message.dataset.date;
+        
+        if (msgDate && msgDate !== previousMessageDate) {
+            const dateTitle = document.createElement('h2')
+            dateTitle.classList.add('message-date')
+            
+            if (msgDate === todayStr) {
+                dateTitle.textContent = "Сьогодні"
+            } else {
+                const dateObj = new Date(msgDate);
+                dateTitle.textContent = dateFormatter.format(dateObj).replace(/\s?р\.?$/, '');
+            }
+            
+            messages.insertBefore(dateTitle, message)
+        }
+        previousMessageDate = msgDate
+    })
+}
+
+
+function formatChatBadgeDate(isoString) {
+    if (!isoString) return "";
+    
+    const dateObj = new Date(isoString);
+    const now = new Date();
+    
+    const isToday = dateObj.getDate() === now.getDate() &&
+                    dateObj.getMonth() === now.getMonth() &&
+                    dateObj.getFullYear() === now.getFullYear()
+                    
+    if (isToday) {
+        const hours = String(dateObj.getHours()).padStart(2, '0')
+        const minutes = String(dateObj.getMinutes()).padStart(2, '0')
+        return `${hours}:${minutes}`
+    } else {
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+        const year = dateObj.getFullYear()
+        return `${day}.${month}.${year}`
+    }
+}
+
+document.querySelectorAll('.format-chat-date').forEach(el => {
+    const rawDate = el.dataset.rawDate
+    el.textContent = formatChatBadgeDate(rawDate)
+})
+
+
+
+function scrollToBottom(smooth = false) {
+    const allMessages = messages.querySelectorAll('.message')
+    if (allMessages.length > 0) {
+        const lastMessage = allMessages[allMessages.length - 1]
+        lastMessage.scrollIntoView({ 
+            behavior: smooth ? 'smooth' : 'auto', 
+            block: 'end' 
+        })
+    }
+}
+

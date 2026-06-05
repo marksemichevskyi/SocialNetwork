@@ -38,6 +38,42 @@
                 </h3>
             </button>
             {% endfor %}
+            {% for friend in friends %}
+            <button class = 'single_contact' data-id="{{ friend.id }}">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <h3>
+                    {% if friend.profile.pseudonym %}
+                    {{ friend.profile.pseudonym }}
+                    {% else %}
+                    Користувач
+                    {% endif %}
+                </h3>
+            </button>
+            {% endfor %}
+            {% for friend in friends %}
+            <button class = 'single_contact' data-id="{{ friend.id }}">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <h3>
+                    {% if friend.profile.pseudonym %}
+                    {{ friend.profile.pseudonym }}
+                    {% else %}
+                    Користувач
+                    {% endif %}
+                </h3>
+            </button>
+            {% endfor %}
+            {% for friend in friends %}
+            <button class = 'single_contact' data-id="{{ friend.id }}">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <h3>
+                    {% if friend.profile.pseudonym %}
+                    {{ friend.profile.pseudonym }}
+                    {% else %}
+                    Користувач
+                    {% endif %}
+                </h3>
+            </button>
+            {% endfor %}
         </div>   
     </div>
 </div> 
@@ -104,7 +140,7 @@
                                 Повідомлень нема
                             {% endif %}</h4>
                     </div>
-                    <h5 class="message_date">{{ chat_data.latest_time }}</h5>
+                    <h5 class="message_date format-chat-date" data-raw-date="{{ chat_data.latest_time }}"></h5>
                 </button>
             {% endfor %}
         </div>
