@@ -1032,3 +1032,27 @@ h4, h3{
 
 }
 
+.online_marker{
+    height: 12px;
+    width: 12px;
+    border-radius: 100%;
+    background-color: #CDCED2;
+    border: white solid 2.5px;
+    display: flex;
+    position: absolute;
+    margin: auto;
+    z-index: 2;
+    bottom: 0;
+    right: 0;
+}
+
+.active_marker{
+    background-color: rgb(0, 196, 0);
+}
+
+#groupHeader{
+    display: flex;
+    bottom: 0;
+    margin: auto;
+}
+

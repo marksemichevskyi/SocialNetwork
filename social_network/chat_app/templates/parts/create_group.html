@@ -11,7 +11,7 @@
             <p>Вибрано: 0</p>
             <div class="list_members contacts" >
                 {% for friend in friends %}
-                    <div class = 'search_single_contact'>
+                    <div class = 'search_single_contact' data-id="{{ friend.id }}">
                         <input id="checkbox_{{ forloop.counter }}" type="checkbox">
                         <div class = 'single_contact'>
                             <img src = '{% static "images/avatar_test.png" %}'>
@@ -54,6 +54,7 @@
             <div class="members">
                 <p>Учасники</p>
                 <div class="selected_members"></div>
+                <h5 class = 'group_error_msg'></h5>
             </div>
             <div class = "form_buttons">
                 <button class = "tag_button_close" id = 'go_back'>Назад</button>

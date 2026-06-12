@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href = "{% static 'base.css' %}">
     {% block links %}{% endblock %}
+
     {% block meta %}{% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block title %}<title>Document</title>{% endblock %}
@@ -73,6 +74,8 @@
         {% block scripts%}
         {% endblock %}
         <script src = '{% static "js/base.js" %}'></script>
+        <script src = "{% static 'js/presence.js' %}"></script>
     </div>
 </body>
 </html>
+

@@ -38,42 +38,6 @@
                 </h3>
             </button>
             {% endfor %}
-            {% for friend in friends %}
-            <button class = 'single_contact' data-id="{{ friend.id }}">
-                <img src = '{% static "images/avatar_test.png" %}'>
-                <h3>
-                    {% if friend.profile.pseudonym %}
-                    {{ friend.profile.pseudonym }}
-                    {% else %}
-                    Користувач
-                    {% endif %}
-                </h3>
-            </button>
-            {% endfor %}
-            {% for friend in friends %}
-            <button class = 'single_contact' data-id="{{ friend.id }}">
-                <img src = '{% static "images/avatar_test.png" %}'>
-                <h3>
-                    {% if friend.profile.pseudonym %}
-                    {{ friend.profile.pseudonym }}
-                    {% else %}
-                    Користувач
-                    {% endif %}
-                </h3>
-            </button>
-            {% endfor %}
-            {% for friend in friends %}
-            <button class = 'single_contact' data-id="{{ friend.id }}">
-                <img src = '{% static "images/avatar_test.png" %}'>
-                <h3>
-                    {% if friend.profile.pseudonym %}
-                    {{ friend.profile.pseudonym }}
-                    {% else %}
-                    Користувач
-                    {% endif %}
-                </h3>
-            </button>
-            {% endfor %}
         </div>   
     </div>
 </div> 
@@ -100,6 +64,11 @@
     </div>
     <div id="control-elements">
         <input type="text" id="msg-input" placeholder = "Повідомлення">
+        <input type="file" id="message-files" accept="image/*" multiple style = "display : none;">
+        <button id = 'add_image_btn'>
+            <img src = '{% static "images/image_button_icon.png" %}'>
+        </button>
+
         <button id="send-msg">
             <img src = '{% static "images/send_icon.png" %}'>
         </button>
@@ -118,13 +87,17 @@
                 <img src = '{% static "images/messages_icon.png" %}'>
                 <h2>Повідомлення</h2>
             </span>
-            <button class = 'show_all'>Дивитись всі</button>
         </div>
 
         <div class = 'last_chat_messages'>
             {% for chat_data in individual_chats %}
                 <button class = 'created_chat' data-id="{{ chat_data.chat_id }}">
-                    <img src = '{% static "images/avatar_test.png" %}'>
+                    <div class="chat_avatar">
+                        <img src = '{% static "images/avatar_test.png" %}'>
+                        <div class="online_marker" data-id = '{{ chat_data.other_user.id }}'>
+                        </div>
+                    </div>
+                    
                     <div class = 'friend_message'>
                         <h3>
                             {% if chat_data.other_user.profile.pseudonym %}
@@ -134,8 +107,12 @@
                             {% endif %}
                         </h3>
                         <h4 class="latest_message">
-                            {% if chat_data.latest_message.text %}
+                            {% if chat_data.latest_message %}
+                                {% if chat_data.latest_message.text %}
                                 {{ chat_data.latest_message.text }}
+                                {%else%}
+                                    Фото
+                                {%endif%}
                             {% else %}
                                 Повідомлень нема
                             {% endif %}</h4>
@@ -152,18 +129,26 @@
                 <img src= '{% static "images/messages_icon.png" %}'>
                 <h2>Групові чати</h2>
             </span>
-            <button class = 'show_all'>Дивитись всі</button>
         </div>
 
         <div class = 'last_group_messages'>
-            {% for chat_data in group_chats %}
-                <button class = 'created_group'>
+            {% for group in group_chats %}
+                <button class = 'created_group created_chat' data-id="{{ group.group_id }}">
                     <img src = '{% static "images/avatar_test.png" %}'>
                     <span class = 'group_message'>
-                        <h3>{{ chat_data.name }}</h3>
-                        <h4 class="latest_message">Привіт! Як справи?</h4>
+                        <h3>{{ group.group_name }}</h3>
+                        <h4 class="latest_message">                            
+                            {% if group.latest_message %}
+                                {% if group.latest_message.text %}
+                                {{ group.latest_message.text }}
+                                {%else%}
+                                    Фото
+                                {%endif%}
+                            {% else %}
+                                Повідомлень нема
+                            {% endif %}</h4>
                     </span>
-                    <h5 class="message_date">18:20</h5>
+                    <h5 class="message_date format-chat-date" data-raw-date="{{ group.latest_time }}"></h5>
                 </button>
             {% endfor %}
         </div>

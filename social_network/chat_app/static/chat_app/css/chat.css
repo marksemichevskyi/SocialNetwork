@@ -248,25 +248,24 @@ h3{
     width:fit-content;
     justify-self: left;
     margin-right: auto;
-    max-width: 90%;
+    max-width: 100%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.friend_message {
+.friend_message, .group_message {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 90%;
     box-sizing: border-box;
-    width: 70%;
+    width: 60%;
 }
 
-.friend_message h3 {
+.friend_message h3, .group_message h3 {
     font-size: 1rem;
     font-weight: bold !important;
-
 }
 
 h5 {
@@ -431,6 +430,8 @@ h5 {
     height: clamp(1px,25.6vh,192px);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    gap: 1vh;
 
 }
 
@@ -498,6 +499,7 @@ h5 {
     flex-direction: row;
     align-items: end;
     justify-content: start;
+   
     gap:  clamp(1px, 0.7vw , 11px );
     width: fit-content;
     max-width: 80%;
@@ -535,6 +537,8 @@ h5 {
     display: flex;
     flex-direction: row;
     align-items: center;
+   
+    
     gap: clamp(1px, 0.2vw , 4px );
 }
 
@@ -573,7 +577,7 @@ h5 {
     margin: 0;
 }
 
-#send-msg {
+#send-msg, #add_image_btn {
     padding: 0;
     box-shadow: none;
     border: none;
@@ -583,7 +587,7 @@ h5 {
 
 }
 
-#send-msg img {
+#send-msg img, #add_image_btn img{
     height: 92%;
     
 }
@@ -720,3 +724,78 @@ h5 {
 .custom_checkbox_wrapper:hover .custom_checkbox_icon {
     filter: brightness(0.9);
 } */
+
+.message_images_container {
+    max-width: 100%;
+}
+
+.chat_attached_image {
+    max-width: 100%;
+    border-radius: 0.7vh;
+}
+
+.last_group_messages {
+    max-height: clamp(1px, 34.5vh, 251.7px);
+    overflow: hidden;
+}
+
+.selected_single_contact button {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 1.8vw;
+    font-weight: 100;
+    cursor: pointer;
+    color: #333;
+    line-height: 1;
+    border-radius: 2vh;
+    height: clamp(1px,2.9vh,20px);
+}
+
+.selected_single_contact button img {
+    height: 100%;
+
+}
+
+.search_single_contact .single_contact h3 {
+    font-size: 1rem;
+}
+
+h4 {
+    font-weight: 100;
+}
+
+.selected_single_contact {
+    height: clamp(1px,6.5vh,46px);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    box-sizing: border-box;
+}    
+
+.selected_members {
+    gap: 0.5vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+
+
+.unread{
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    background-color: rgb(159, 159, 241);
+}
+
+.chat_avatar{
+    position: relative;
+}
