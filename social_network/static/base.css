@@ -1056,3 +1056,31 @@ h4, h3{
     margin: auto;
 }
 
+.main_unread{
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    background-color: #FF4C4C;
+
+    place-items: center;
+    margin: auto;
+    font-size: 0.5rem;
+    color: white;
+    border: white solid 2.25px;
+    position: absolute;
+    z-index: 2;
+    bottom: clamp(1px, 1.3vh, 10px);
+    margin-left: clamp(1px, 0.7vw , 10px );
+}
+
+
+.chat_icon{
+    position: relative;
+    justify-content: start;
+    height: 100%;
+
+}
+
+.chat_icon img {
+    height: 100%;
+}

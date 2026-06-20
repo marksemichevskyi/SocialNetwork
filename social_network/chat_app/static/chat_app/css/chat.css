@@ -236,6 +236,7 @@ h3{
     outline: none;
     box-shadow: none;
     background: none;
+    cursor: pointer;
 }
 
 .created_chat img, .created_group img {
@@ -359,7 +360,7 @@ h5 {
     color: #81818D;
 }
 
-.group_first{
+.group_first, .edit_group_first{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -372,7 +373,7 @@ h5 {
     width: 100%;
 }
 
-.group_second{
+.group_second, .edit_group_second{
     width: 100%;
     height: 100%;
     display: flex;
@@ -432,6 +433,7 @@ h5 {
     flex-direction: column;
     overflow: hidden;
     gap: 1vh;
+    position: relative;
 
 }
 
@@ -604,6 +606,7 @@ h5 {
     gap: clamp(1px,1.5vw,24px);
     border-bottom: 1px solid #CDCED2;
     flex-shrink: 0;
+    position: relative;
 }
 
 
@@ -647,13 +650,13 @@ h5 {
 
 
 
-.options img {
+#options img {
     height: clamp(1px,2.6vh,20px);
 
 }
 
-.options {
-    justify-self: right;
+#options {
+    right: 0;
     margin-left: auto;
     padding: 0;
     border: none;
@@ -661,6 +664,8 @@ h5 {
     box-shadow: none;
     background: none;
     cursor: pointer;
+    position: absolute;
+    z-index: 2;
 }
 
 .message-date { 
@@ -793,9 +798,82 @@ h4 {
     width: 12px;
     height: 12px;
     border-radius: 100%;
-    background-color: rgb(159, 159, 241);
+    background-color: #FF4C4C;
+    display: grid!important;
+    place-items: center;
+    margin: auto;
+    font-size: 0.5rem;
+    color: white;
 }
 
 .chat_avatar{
     position: relative;
 }
+
+.user_settings{
+    position: absolute;
+    display: flex!important;
+    max-height: clamp(1px, 23.4vh, 176px);
+    flex-direction: column;
+    border-radius: 1vh;
+    background-color: #E9E5EE;
+    padding: clamp(1px,2.9vh,20px) clamp(1px,1.3vw,20px);
+    box-sizing: border-box;
+    left: clamp(1px, 16.6vw, 250px);
+    top: clamp(1px, 1.4vh , 7px );
+    gap: clamp(1px, 1.8vh , 14px );
+    width: clamp(1px, 17.3vw, 260px);
+}
+.settings_div{
+    display: flex;
+    flex-direction: row;
+    gap: clamp(1px, 0.3vw, 5px);
+    cursor: pointer;
+}
+.settings_div img{
+    height: clamp(1px,2.9vh,20px);
+}
+
+hr {
+    border: solid #CDCED2 1px;
+    margin: 0;
+}
+
+
+.add_members_to_group{
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    font-weight: 100;
+    cursor: pointer;
+    height: clamp(1px,2.9vh,20px);
+    width: clamp(1px, 9vw, 136px);
+    right: 0;
+    margin-left: auto;
+} 
+
+.add_members_to_group img{
+    height: clamp(1px,2.9vh,20px);
+}
+
+.edit_selected_members, .selected_members{
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#edit_group_cancel{
+    position: relative;
+    right: 0;
+    margin-left: auto;
+}
+
+.indicator {
+    display: none;
+}
+
+

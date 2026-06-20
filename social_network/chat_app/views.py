@@ -26,21 +26,25 @@ class ChatView(LoginRequiredMixin, TemplateView):
         group_data = []
         for group in groups:
             latest_message = group.messages.order_by('-created_at').first()
+            unread_messages = group.messages.exclude(sender= self.request.user).exclude(readers= self.request.user)
             group_data.append({
                 'group_name': group.name,
                 "group_id": group.id,
                 "latest_time": localtime(latest_message.created_at).isoformat() if latest_message else "",
-                "latest_message": latest_message
+                "latest_message": latest_message,
+                'unread_messages': len(unread_messages)
                 })
             
         for chat in chats:
             other_user = chat.users.exclude(id = self.request.user.id).first()
             latest_message = chat.messages.order_by('-created_at').first()
+            unread_messages = chat.messages.exclude(sender= self.request.user).exclude(readers= self.request.user)
             data.append({
                 "chat_id": chat.id,
                 "other_user":  other_user,
                 "latest_time": localtime(latest_message.created_at).isoformat() if latest_message else "",
-                "latest_message": latest_message
+                "latest_message": latest_message,
+                'unread_messages': len(unread_messages)
             })
         context["individual_chats"] = data
         context["group_chats"] = group_data
@@ -79,6 +83,7 @@ class GetMessagesView(View):
                 for message in message_list:
                     if message.sender != request.user: 
                         message.readers.add(request.user)
+                    
                     sender_pseudonym = message.sender.profile.pseudonym if hasattr(message.sender, 'profile') else "Користувач"
                     list_url_image = []
                     for image in message.images.all():
@@ -171,7 +176,9 @@ class GetGroupUsersView(LoginRequiredMixin, View):
         chat = Chat.objects.filter(id = id, users = request.user).first()
         if chat != None and chat.is_group:
             users_id = []
+            group_admin = chat.admin.id
             online_users_id = []
+            
             for user in chat.users.all():
                 users_id.append(user.id)
                 if user.id in online_users:
@@ -181,5 +188,43 @@ class GetGroupUsersView(LoginRequiredMixin, View):
                 'name': chat.name,
                 'users_id': users_id,
                 'online_users_id': online_users_id,
+                'chat_id': chat.id,
+                'group_admin': group_admin,
+                'current_user': request.user.id
             })
         return JsonResponse({"success": False})
+    
+    
+class EditGroupView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            chat_id = data.get('chat_id')
+            group_name = data.get('name')
+            friend_ids = data.get('friends', [])
+            group = Chat.objects.filter(id=chat_id, is_group=True, admin=request.user).first()
+            if not group:
+                return JsonResponse({'success': False, 'error': 'Ви не є адміном цієї групи або її не існує'}, status=403)
+            if len(friend_ids) < 2:
+                return JsonResponse({'success': False, 'error': 'Додайте мінімум 2 учасника'}, status=400)
+            if group_name and group_name.strip():
+                group.name = group_name.strip()
+                group.save()
+            user_friends = get_friends_by_section(current_user=request.user, section='friends')
+            valid_users = [request.user] 
+
+            for u_id in friend_ids:
+                user = User.objects.filter(id=u_id).first()
+                if user in user_friends:
+                    valid_users.append(user)
+
+            group.users.set(valid_users)
+
+            return JsonResponse({
+                'success': True,
+                'name': group.name,
+                'chat_id': group.id
+            })
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)

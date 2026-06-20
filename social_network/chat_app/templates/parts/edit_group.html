@@ -1,0 +1,71 @@
+{% load static %}
+
+    <div class="group_creation form_div">
+        <button type="button" id = 'edit_group_cancel' class="tag_close">&times;</button>
+        <div class = 'edit_group_second disable'>
+            <h1>Додати учасника</h1>
+            <div class="search_div" id = "group_search">
+                <input type="text" id="search_new_members" class="search_bar" placeholder = 'Пошук'>
+                <img src = '{% static "images/search_icon.png" %}'>
+            </div>
+            <p>Вибрано: 0</p>
+            <div class="list_members contacts" >
+                {% for friend in friends %}
+                    <div class = 'search_single_contact' data-id="{{ friend.id }}">
+                        <input id="checkbox_{{ forloop.counter }}" type="checkbox" class = 'edit_friend_checkbox'>
+                        <div class = 'single_contact'>
+                            <img src = '{% static "images/avatar_test.png" %}'>
+                            <h3>{% if friend.profile.pseudonym %}
+                                    {{ friend.profile.pseudonym }}
+                                {% else %}
+                                    Користувач
+                                {% endif %}
+                            </h3>
+                        </div>
+                    </div>    
+                {% endfor%}    
+            </div>
+                <div class = "form_buttons">
+                    <button class = "tag_button_close" id = 'edit_window_second_cancel'>Скасувати</button>
+                    <button class = "style_button" id = 'edit_window_second_save'>Зберегти</button>
+                </div>    
+            </div>
+
+
+        <div class = 'edit_group_first '>
+            <h1>Редагування групи</h1>
+            <div class="input_group_name">
+                <label for="group_name">Назва</label>
+                <input type="text" id="edit_group_name" class="search_bar" placeholder = 'Введіть назву'>
+            </div>
+            <div class="group_avatar">
+                <img src = '{% static "images/avatar_test.png" %}'>
+                <div class="avatar_buttons">
+                    <button class="add_avatar">
+                        <img src = '{% static "images/add_icon.png" %}'>
+                        <h4>Додайте фото</h4>
+                    </button>
+                    <button class="select_avatar">
+                         <img src = '{% static "images/post_page_icon.png" %}'>   
+                         <h4>Оберіть фото</h4>
+                    </button>
+                </div>
+
+            </div>
+            <div class="members">
+                <button class = 'add_members_to_group'>
+                    <img src = {% static "images/add_icon.png" %}>
+                    <h4>Додайте учасників</h4>
+                </button>
+                <p>Учасники</p>
+                <div class="edit_selected_members"></div>
+                <h5 class = 'edit_group_error_msg'></h5>
+            </div>
+            <div class = "form_buttons">
+                <button class = "tag_button_close" id = 'go_back'>Назад</button>
+                <button class = "style_button" id = 'edit_group_final_submit'>Зберегти зміни</button>
+            </div>    
+        </div>
+    </div>
+
+

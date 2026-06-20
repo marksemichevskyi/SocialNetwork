@@ -1,6 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-
 # Глобальний словник (працює коректно тільки на одному процесі воркера)
 online_users = {}
 
@@ -17,8 +16,7 @@ class PresenceConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.channel_layer.group_add(self.user_group_name, self.channel_name)
         await self.accept()
-        
-        # Облік онлайну
+
         if self.user.id in online_users:
             online_users[self.user.id] += 1
         else:
@@ -28,7 +26,8 @@ class PresenceConsumer(AsyncWebsocketConsumer):
                 {
                     'type': "send_status",
                     'status': True,
-                    'user_id': self.user.id
+                    'user_id': self.user.id,
+
                 }
             )
 
@@ -71,9 +70,10 @@ class PresenceConsumer(AsyncWebsocketConsumer):
             'status': event['status']
         }))
 
-    # Обробник події "type": "chat_list_update" (прилітає з chat_app)
+
     async def chat_list_update(self, event):
         await self.send(text_data=json.dumps({
             'type': 'sidebar_notification',
-            'chat_id': event['chat_id']
+            'chat_id': event['chat_id'],
+            'message_data': event.get('message_data')  # ПРОКИДАЄМО НА ФРОНТЕНД
         }))

@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'friends_app',
     'main_app',
     'chat_app',
-    'profile_app'
+    'profile_app',
+    'social_network'
 ]
 
 MIDDLEWARE = [

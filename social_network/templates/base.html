@@ -1,5 +1,6 @@
 <html lang="en">
 {% load static%}
+{% load get_chat_data %}
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href = "{% static 'base.css' %}">
@@ -34,7 +35,18 @@
                         <span class = 'text' >Друзі</span>
                     </a>
                     <a class = "page_text_button" href = '/chat/'>
-                        <img class = 'image' src = "{% static 'images/chat_page_icon.png' %}">
+                        <div class="chat_icon">
+                            <img src='{% static "images/chat_page_icon.png" %}'>
+                            {% get_unreaded_messages request.user as unread_count %}
+
+                            {% if unread_count > 0 %}
+                                <h6 class="main_unread" style = 'display: grid;'>
+                                    {{ unread_count }}
+                                </h6>
+                            {% else %}
+                                <h6 сдфіі = 'main_unread'></h6>
+                            {% endif %}
+                        </div>
                         <span class = 'text'>Чати</span>
                     </a>
 

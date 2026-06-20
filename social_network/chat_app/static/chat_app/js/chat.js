@@ -19,9 +19,13 @@ const loadLine = document.querySelector("#load-message-line")
 let pageNumber = 1
 let observer = null
 let chatId = null
-
+let settingsModalOpen = false
 let listOnlineGroupUsers = null
 let listGroupUsers = null
+
+let isGroupAdmin = false
+let isGroup = false
+
 
 const currentUserId = document.querySelector("meta[name='current_user']").content
 const createGroupBtn = document.querySelector(".add_group_button")
@@ -39,7 +43,6 @@ const groupChats = document.querySelector('.last_group_messages')
 const chatName = document.querySelector(".chat_name")
 const msgImageInput = document.querySelector("#message-files")
 
-const input = document.querySelector("#message-files")
 const imgBtnInput = document.querySelector("#add_image_btn")
 
 const senderAvatar = document.querySelector(".sender_avatar").dataset.img
@@ -47,10 +50,42 @@ const messageStatus = document.querySelector(".message_status_image").dataset.im
 
 const errorMsg = document.querySelector('.group_error_msg') 
 
+const chatOptionsButton = document.querySelector("#options")
+
+const adminGroupSettings = document.querySelector(".admin_group_settings")
+const groupSettings = document.querySelector(".group_settings")
+
+const redactGroupBtn = document.querySelector(".redact_group")
+
+//--------------------------------------------------------------------------------------------------------------------------------
+redactGroupBtn.addEventListener("click", ()=>{
+    openEditGroupModal()
+})
+
+chatOptionsButton.addEventListener("click", ()=>{
+    if(isGroup){
+        if(!document.querySelector('.user_settings')){
+            if (isGroupAdmin){
+                adminGroupSettings.classList.add('user_settings')
+                groupSettings.classList.remove('user_settings')
+            }
+            else{
+                adminGroupSettings.classList.remove('user_settings')
+                groupSettings.classList.add('user_settings')
+            }
+        }else{
+            adminGroupSettings.classList.remove('user_settings')
+            groupSettings.classList.remove('user_settings') 
+        }
+    }
+
+
+})
+
 
 imgBtnInput.addEventListener("click", ()=> {
-    if (input) {
-        input.click();
+    if (msgImageInput) {
+        msgImageInput.click();
     } else {
         console.error("Помилка: imageInput не знайдено!");
     }
@@ -79,7 +114,54 @@ groupClosebtn.addEventListener("click" , ()=> {
     grouptSecond.classList.add("disable")
 })
 
+function updateEditMembersCount() {
+    // Рахуємо тільки ті чекбокси, які зараз відмічені
+    const checkedCount = document.querySelectorAll(".edit_friend_checkbox:checked").length;
+    editMembersCountText.innerHTML = `Вибрано: ${checkedCount}`;
+}
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+function initPaginationObserver() {
+    if (observer) {
+        observer.disconnect();
+    }
+
+    observer = new IntersectionObserver(async (entries) => {
+        if (entries[0].isIntersecting && chatId) {
+            const currentScrollHeight = messages.scrollHeight;
+            const currentChatId = chatId; // Фіксуємо поточний ID перед запитом
+            
+            pageNumber++; 
+            
+            const hasMore = await loadMessages(chatId);
+            
+            // Якщо користувач уже змінив чат, поки йшов fetch — ігноруємо результат
+            if (chatId !== currentChatId) return;
+
+            if (hasMore) {
+                createDateMessage();
+                // ВИПРАВЛЕНО: додаємо різницю висоти до поточного скролу
+                messages.scrollTop += (messages.scrollHeight - currentScrollHeight);
+            } else {
+                observer.disconnect();
+            }
+        }
+    }, {
+        root: messages, 
+        threshold: 0.1
+    });
+
+    if (loadLine) {
+        observer.observe(loadLine);
+    }
+}
+
+
+
+//---------------------------------------------------------CREATE GROUP------------------------------------------------------------------------
 const selectedMembers = document.querySelectorAll(".search_single_contact input[type='checkbox']")
 const membersCountText = document.querySelector(".group_first p")
 
@@ -142,6 +224,74 @@ continueBtn.addEventListener("click", () => {
 
 
 
+const groupSection = document.querySelector(".members") 
+
+createGroup.addEventListener('click', async () => {
+    
+    errorMsg.innerHTML = ''
+    // 2. Перевірка: якщо учасників менше 2, зупиняємо процес
+    if (membersData.length < 2) {
+        errorMsg.style.color = "red"
+        errorMsg.textContent = "Додайте мінімум 2 учасника"
+        return
+    }
+
+
+    const data = {
+        'name': groupName.value,
+        'friends': []
+    }
+    
+    membersData.forEach(selectedUser => {
+        data.friends.push(selectedUser.user_id)
+    })
+
+    const response = await fetch(
+        '/chat/create/group/',
+        {
+            headers: {
+                'X-CSRFToken' : csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            method: 'POST',
+            body: JSON.stringify(data)
+        }
+    )
+    const responseData = await response.json()
+    addGropPopUp.style.display = 'none'
+
+    const newChat = document.createElement("button")
+    newChat.dataset.id = responseData.chat_id
+    newChat.classList.add("created_chat")
+    newChat.classList.add("created_group")
+    newChat.innerHTML = `
+    <img src = "${senderAvatar}">
+    <span class = 'group_message'>
+    <h3>${responseData.name}</h3>
+    <h4 class="latest_message">                            
+        Повідомлень нема
+        </h4>
+    </span>
+    <h5 class="message_date format-chat-date"></h5>
+    `
+    groupChats.appendChild(newChat)
+
+    getChats()
+    
+    openChat(responseData.chat_id)
+    newChat.addEventListener("click", ()=>{
+        openChat(responseData.chat_id)
+    })
+})
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+//--------------------------------------------------------USERS ONLINE------------------------------------------------
 function updateGroupUsers(id, status){
     if (listGroupUsers != null){
         if (listGroupUsers.includes(id)){
@@ -162,34 +312,50 @@ async function getGroupUsers(id){
     
     listOnlineGroupUsers = null
     listGroupUsers = null
-
+    
     const response = await fetch(`/chat/${id}/getGroupUsers/`)
     const data = await response.json()
     if (data.success){
         listGroupUsers = data.users_id
         listOnlineGroupUsers = data.online_users_id
-
+        isGroup = true
+        if(data.group_admin == data.current_user){
+            isGroupAdmin= true
+        }else{
+            isGroupAdmin = false
+        }
         groupHeader.innerHTML = `
             ${data.users_id.length} учасники, ${data.online_users_id.length} в мережі
         `
+    }else{
+        isGroup = false
     }
 }
 
 
+//-----------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-async function loadMessages(chatId){
+
+//------------------------------------------------MANAGE MESSAGES--------------------------------------------------------------
+
+async function loadMessages(chatIdToLoad){
     const response = await fetch(
-        `/chat/${chatId}/getMessages/?page=${pageNumber}`,
+        `/chat/${chatIdToLoad}/getMessages/?page=${pageNumber}`,
         {headers: {'X-Requested-With': 'XMLHttpRequest'}}
     )
     const data = await response.json()
-    console.log("Дані з бекенду:", data.messages)
+
+    if (chatIdToLoad !== chatId) return false; 
+    
     if (data.success && data.messages.length > 0){
-        const latestMessage = data.messages[0];
-        getLastMessage(chatId, latestMessage.text, latestMessage.datetime, latestMessage.message_id);
+        if (pageNumber === 1) {
+            const latestMessage = data.messages[0];
+            getLastMessage(chatIdToLoad, latestMessage.text, latestMessage.datetime, latestMessage.message_id);
+            
+        }
 
         data.messages.forEach((message)=>{
             createMessage(
@@ -203,7 +369,9 @@ async function loadMessages(chatId){
                 message.images,
             );
         });
+        return true; 
     }
+    return false; 
 }
 
 function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true, current_user, date, images){
@@ -247,7 +415,6 @@ function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true
 
 
     if (images && images.length > 0){
-
         const imagesContainer = document.createElement("div")
         imagesContainer.classList.add("message_images_container")
 
@@ -255,12 +422,15 @@ function createMessage(sender_pseudonym, sender_id, text, dateTime, isNew = true
             const newImage = document.createElement("img") 
             newImage.src = imageUrl
             newImage.classList.add("chat_attached_image") 
+            
+            // КРИТИЧНО: Перераховуємо скрол, коли файл картинки фізично завантажився
+            newImage.addEventListener('load', scrollOnImageLoad);
+            
             imagesContainer.append(newImage)
         })
 
         newMessage.querySelector('.message_content').appendChild(imagesContainer)
     }
-
     newMessage.dataset.date = date
     if(isNew){
         messages.appendChild(newMessage)
@@ -294,10 +464,219 @@ function getLastMessage(chat_id, messageText, messageDate, messageId) {
             dateElement.dataset.rawDate = messageDate;
         }
     }
+    
 }
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-async function openChat(id) { // 1. Додали async сюди
+
+
+function renderCountUnreadedMessages(){
+    let globalCount = 0; // Оголошуємо один раз ПОЗА циклом, щоб сумувати і чати, і групи
+
+    for (const containerName of ["chat_messages", "group_messages"]){
+        const unreadeds = document.querySelectorAll(`.${containerName} .unread`);
+        let localCount = 0; // Лічильник суто для поточного контейнера
+
+        unreadeds.forEach(unreaded => {
+            const count = Number(unreaded.textContent);
+            localCount += count;
+            globalCount += count; // Додаємо до загальної суми для хедера
+        });
+
+        // Оновлюємо індикатор конкретного списку (особисті або групи)
+        const mainIndicator = document.querySelector(`.${containerName} .main_indicator`);
+        if (mainIndicator) {
+            if (localCount > 0){
+                mainIndicator.style.display = 'grid';
+                mainIndicator.textContent = localCount;
+                mainIndicator.classList.add("main_unread");
+            } else {
+                mainIndicator.style.display = 'none';
+            }
+        }
+    }
+
+    // ОНОВЛЕННЯ ХЕДЕРА: Робиться один раз, коли цикл повністю завершився
+    const headerIndicator = document.querySelector('.page_buttons .main_unread');
+    if (headerIndicator) {
+        if (globalCount > 0) {
+            headerIndicator.style.display = 'grid';
+            headerIndicator.textContent = globalCount;
+        } else {
+            headerIndicator.style.display = 'none';
+        }
+    }
+}
+renderCountUnreadedMessages()
+//------------------------------------------------------------------------------------------------------------------------------
+
+
+//----------------------------------------------------EDIT GROUP-----------------------------------------------------------------
+let editMembersData = []
+const editMembersCountText = document.querySelector(".edit_group_second p")
+
+const editGroupPopUp = document.querySelector("#edit_group_pop-up")
+const editGroupFirst = document.querySelector(".edit_group_first")
+const editGroupSecond = document.querySelector(".edit_group_second")
+function openEditGroupModal() {
+    if (!chatId || !isGroupAdmin) return
+
+    editMembersData = []
+
+    const currentChatBtn = document.querySelector(`.created_chat[data-id="${chatId}"]`)
+    const currentName = currentChatBtn ? currentChatBtn.querySelector('h3').textContent.trim() : ""
+    document.querySelector("#edit_group_name").value = currentName
+    const allFriendCards = document.querySelectorAll(".single_contact")
+    
+    allFriendCards.forEach(card => {
+        const uId = String(card.dataset.id);
+
+        if (listGroupUsers && listGroupUsers.map(String).includes(uId) && uId !== String(currentUserId)) {
+            editMembersData.push({
+                'user_id': uId,
+                'user_name': card.querySelector('h3').textContent.trim()
+            });
+        }
+    });
+
+    renderEditMembersList()
+
+    editGroupPopUp.classList.remove("disable")
+    editGroupFirst.classList.remove("disable")
+    editGroupSecond.classList.add("disable")
+}
+
+function renderEditMembersList() {
+    const container = document.querySelector(".edit_selected_members")
+    container.innerHTML = ""
+
+    editMembersData.forEach(member => {
+        container.innerHTML += `
+        <div class='selected_single_contact' data-id="${member.user_id}">
+            <button class='remove_edit_user' type="button">
+                <img src='/static/images/bin_icon.png'>
+            </button>
+            <div class='single_contact'>
+                <img src='/static/images/avatar_test.png'>
+                <h3>${member.user_name}</h3>
+            </div>
+        </div>`
+    })
+
+    container.querySelectorAll('.remove_edit_user').forEach(button => {
+        button.addEventListener('click', () => {
+            const parent = button.closest('.selected_single_contact');
+            const uId = parent.dataset.id
+            editMembersData = editMembersData.filter(item => item.user_id !== uId)
+            parent.remove()
+        })
+    })
+}
+const addMembersBtn = document.querySelector(".add_members_to_group")
+    addMembersBtn.addEventListener("click", () => {
+    editGroupFirst.classList.add("disable");
+    editGroupSecond.classList.remove("disable");
+    
+    const checkboxes = document.querySelectorAll(".edit_friend_checkbox");
+    
+    checkboxes.forEach(cb => {
+        const card = cb.closest('.search_single_contact');
+        const uId = String(card.dataset.id).trim(); // Захист від пробілів
+        
+        cb.checked = editMembersData.some(item => String(item.user_id).trim() === uId);
+
+        // Вішаємо слухач подій (якщо ще не повішений), щоб лічильник реагував на кліки
+        cb.removeEventListener("change", updateEditMembersCount); // Запобігає дублюванню подій
+        cb.addEventListener("change", updateEditMembersCount);
+    });
+
+    // Оновлюємо кількість одразу при переході на вікно
+    updateEditMembersCount();
+});
+
+
+document.querySelector("#edit_window_second_save").addEventListener("click", () => {
+    editMembersData = [];
+    
+    const checkboxes = document.querySelectorAll(".edit_friend_checkbox");
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            const card = cb.closest('.search_single_contact');
+            editMembersData.push({
+                'user_id': String(card.dataset.id).trim(),
+                'user_name': card.querySelector('h3').textContent.trim()
+            });
+        }
+    });
+
+    renderEditMembersList();
+    editGroupSecond.classList.add("disable");
+    editGroupFirst.classList.remove("disable");
+});
+
+const EditGroupCancelBtn = document.querySelector("#edit_window_second_cancel")
+EditGroupCancelBtn.addEventListener("click", () => {
+    editGroupSecond.classList.add("disable")
+    editGroupFirst.classList.remove("disable")
+})
+document.querySelector("#edit_group_final_submit").addEventListener("click", async () => {
+    const errorBlock = document.querySelector('.edit_group_error_msg')
+    errorBlock.innerHTML = ''
+
+    if (editMembersData.length < 2) {
+        errorBlock.style.color = "red"
+        errorBlock.textContent = "Додайте мінімум 2 учасника"
+        return;
+    }
+
+    const payload = {
+        'chat_id': chatId, 
+        'name': document.querySelector("#edit_group_name").value,
+        'friends': editMembersData.map(item => item.user_id)
+    };
+
+    const response = await fetch('/chat/group/edit/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        document.querySelector("#edit_group_pop-up").classList.add("disable")
+        const chatBtn = document.querySelector(`.created_chat[data-id="${responseData.chat_id}"]`);
+        if (chatBtn) {
+            chatBtn.querySelector('h3').textContent = responseData.name;
+        }
+        
+
+        document.querySelector(".chat_name h1").textContent = responseData.name;
+        
+        getGroupUsers(chatId);
+    } else {
+        errorBlock.style.color = "red";
+        errorBlock.textContent = responseData.error || "Помилка при збереженні";
+    }
+})
+document.querySelector("#edit_group_cancel").addEventListener("click", () => {
+    document.querySelector("#edit_group_pop-up").classList.add("disable");
+})
+
+//-------------------------------------------------------------------------------------------------------------------------------
+
+
+//----------------------------------------------------OPEN CHAT-----------------------------------------------------------------
+async function openChat(id) {
+    // ЗАХИСТ 1: Негайно вимикаємо старий обсервер ДО очищення повідомлень.
+    // Якщо цього не зробити, порожній екран спровокує хибне завантаження історії.
+    if (observer) {
+        observer.disconnect();
+        observer = null;
+    }
 
     chatName.innerHTML = ""
     chatBtns.forEach(chatBtn => {
@@ -318,22 +697,35 @@ async function openChat(id) { // 1. Додали async сюди
         <h1>${selectedContactName}</h1>
         <h3 id = 'groupHeader'></h3>`
 
-    messages.querySelectorAll(".message").forEach((msg) => {
-        msg.remove()
-    })
-
-    messages.querySelectorAll(".message-date").forEach((date) => {
-        date.remove()
-    })
+    // Очищаємо контейнер від старих елементів
+    messages.querySelectorAll(".message").forEach((msg) => msg.remove())
+    messages.querySelectorAll(".message-date").forEach((date) => date.remove())
 
     pageNumber = 1
-    chatId = id
-
+    chatId = id 
     await loadMessages(chatId) 
 
-    getGroupUsers(id)
+    if (chatId !== id) return;
 
+    getGroupUsers(id)
     createDateMessage() 
+    
+    adminGroupSettings.classList.remove('user_settings')
+    groupSettings.classList.remove('user_settings')
+
+    setTimeout(() => {
+        if (chatId !== id) return; 
+        scrollToBottom(false);
+        initPaginationObserver();
+    }, 50);
+
+    const indicators = document.querySelectorAll(".indicator")
+    indicators.forEach(indicator => {
+        if(indicator.dataset.id == chatId){
+            
+            indicator.classList.remove("unread")
+        }
+    })
 
     if (chatSocket){
         chatSocket.close()
@@ -360,12 +752,14 @@ async function openChat(id) { // 1. Додали async сюди
             )
             
             getLastMessage(chatId, data.message.text, data.message.datetime, data.message.message_id)
+            renderCountUnreadedMessages()
             createDateMessage() 
             scrollToBottom(true)
         }
-    }  
-}
 
+    }  
+    renderCountUnreadedMessages()
+}
 
 
 chatBtns.forEach(btn => {
@@ -373,16 +767,21 @@ chatBtns.forEach(btn => {
         const chatId = btn.getAttribute('data-id') 
         if (chatId) {
             // chatBtns.forEach(notBtn => {
-            //     notBtn.classList.remove('selected_contact')
-            // }) 
-            // btn.classList.add('selected_contact')
-            openChat(chatId)
-        } else {
-            console.error("Помилка: data-id відсутній у кнопки чату", btn)
-        }
+                //     notBtn.classList.remove('selected_contact')
+                // }) 
+                // btn.classList.add('selected_contact')
+                openChat(chatId)
+            } else {
+                console.error("Помилка: data-id відсутній у кнопки чату", btn)
+            }
+        })
     })
-})
+    
+//------------------------------------------------------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------SEND MESSAGE--------------------------------------------------------
 const sendMsg = document.querySelector("#send-msg")
 const msgInput = document.querySelector("#msg-input")
 
@@ -420,6 +819,7 @@ sendMsg.addEventListener("click", async () => {
     let base64Images = []
 
     if (files.length > 0) {
+        // Конвертуємо FileList у масив промісів
         const filePromises = Array.from(files).map(async (file) => {
             const base64Str = await fileToBase64(file)
             return {
@@ -430,6 +830,7 @@ sendMsg.addEventListener("click", async () => {
         base64Images = await Promise.all(filePromises)
     }
 
+    // Відправка в сокет
     chatSocket.send(
         JSON.stringify({
             "msg": text,
@@ -437,8 +838,9 @@ sendMsg.addEventListener("click", async () => {
         })
     )
 
+    // Очищення полів
     msgInput.value = ''
-    msgImageInput.value = ''
+    msgImageInput.value = null // ВИПРАВЛЕНО: скидаємо значення інпуту файлів повністю
 })
 
 friendDivs.forEach(div => {
@@ -479,12 +881,19 @@ friendDivs.forEach(div => {
         openChat(data.chat_id)
     })
 })
+//-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+//-----------------------------------------------------------------FORMAT MESSAGE---------------------------------------------------------
 
 function createDateMessage(){
-    const messageDates = document.querySelectorAll('.message-date')
+    // ВИПРАВЛЕНО: шукаємо елементи виключно всередині блоку messages
+    const messageDates = messages.querySelectorAll('.message-date')
     messageDates.forEach(date => date.remove())
     
-    const messageList = document.querySelectorAll('.message')
+    const messageList = messages.querySelectorAll('.message')
     let previousMessageDate = null
     const todayStr = new Date().toISOString().split('T')[0];
     
@@ -545,76 +954,26 @@ document.querySelectorAll('.format-chat-date').forEach(el => {
 
 
 function scrollToBottom(smooth = false) {
-    const allMessages = messages.querySelectorAll('.message')
-    if (allMessages.length > 0) {
-        const lastMessage = allMessages[allMessages.length - 1]
-        lastMessage.scrollIntoView({ 
-            behavior: smooth ? 'smooth' : 'auto', 
-            block: 'end' 
-        })
+    if (smooth) {
+        messages.scrollTo({
+            top: messages.scrollHeight,
+            behavior: 'smooth'
+        });
+    } else {
+        messages.scrollTop = messages.scrollHeight;
+    }
+}
+
+// Коригування скролу під час динамічного завантаження картинок
+function scrollOnImageLoad() {
+    const threshold = 200; // зона чутливості в пікселях
+    const isNearBottom = messages.scrollHeight - messages.scrollTop - messages.clientHeight < threshold;
+    if (isNearBottom) {
+        messages.scrollTop = messages.scrollHeight;
     }
 }
 
 
+//-------------------------------------------------------------------------------------------------------------------------------------
 
 
-// Переконайтеся, що цей селектор знаходить правильний контейнер
-const groupSection = document.querySelector(".members") 
-
-createGroup.addEventListener('click', async () => {
-    
-    errorMsg.innerHTML = ''
-    // 2. Перевірка: якщо учасників менше 2, зупиняємо процес
-    if (membersData.length < 2) {
-        errorMsg.style.color = "red" // Опціонально для візуального акценту
-        errorMsg.textContent = "Додайте мінімум 2 учасника"
-        return // Зупиняємо виконання функції, fetch-запит не відправлятиметься
-    }
-
-    // 3. Якщо перевірка пройдена — відправляємо дані на бекенд
-    const data = {
-        'name': groupName.value,
-        'friends': []
-    }
-    
-    membersData.forEach(selectedUser => {
-        data.friends.push(selectedUser.user_id)
-    })
-
-    const response = await fetch(
-        '/chat/create/group/',
-        {
-            headers: {
-                'X-CSRFToken' : csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            method: 'POST',
-            body: JSON.stringify(data)
-        }
-    )
-    const responseData = await response.json()
-    addGropPopUp.style.display = 'none'
-
-    const newChat = document.createElement("button")
-    newChat.dataset.id = responseData.chat_id
-    newChat.classList.add("created_chat")
-    newChat.classList.add("created_group")
-    newChat.innerHTML = `
-    <img src = "${senderAvatar}">
-    <span class = 'group_message'>
-    <h3>${responseData.name}</h3>
-    <h4 class="latest_message">                            
-        Повідомлень нема
-        </h4>
-    </span>
-    <h5 class="message_date format-chat-date"></h5>
-    `
-    groupChats.appendChild(newChat)
-
-    getChats()
-    
-    openChat(responseData.chat_id)
-    newChat.addEventListener("click", ()=>{
-        openChat(responseData.chat_id)
-    })
-})
