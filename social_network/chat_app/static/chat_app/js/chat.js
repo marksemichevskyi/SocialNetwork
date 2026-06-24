@@ -26,7 +26,6 @@ let listGroupUsers = null
 let isGroupAdmin = false
 let isGroup = false
 
-
 const currentUserId = document.querySelector("meta[name='current_user']").content
 const createGroupBtn = document.querySelector(".add_group_button")
 const addGropPopUp = document.querySelector("#add_group_pop-up")
@@ -573,16 +572,15 @@ function renderEditMembersList() {
 }
 const addMembersBtn = document.querySelector(".add_members_to_group")
     addMembersBtn.addEventListener("click", () => {
-    editGroupFirst.classList.add("disable");
-    editGroupSecond.classList.remove("disable");
-    
-    const checkboxes = document.querySelectorAll(".edit_friend_checkbox");
+    editGroupFirst.classList.add("disable")
+    editGroupSecond.classList.remove("disable")
+    const checkboxes = document.querySelectorAll(".edit_friend_checkbox")
     
     checkboxes.forEach(cb => {
         const card = cb.closest('.search_single_contact');
         const uId = String(card.dataset.id).trim(); // Захист від пробілів
         
-        cb.checked = editMembersData.some(item => String(item.user_id).trim() === uId);
+        cb.checked = editMembersData.some(item => String(item.user_id).trim() === uId)
 
         // Вішаємо слухач подій (якщо ще не повішений), щоб лічильник реагував на кліки
         cb.removeEventListener("change", updateEditMembersCount); // Запобігає дублюванню подій
@@ -975,5 +973,32 @@ function scrollOnImageLoad() {
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const openChatId = urlParams.get('open_id');
 
+    if (openChatId) {
+        // ЗАХИСТ 1: Перетворюємо ID на число, якщо твій бекенд/JS працює з інтами
+        // Якщо твої ID — це UUID (рядки), залиш просто openChatId
+        const parsedId = isNaN(openChatId) ? openChatId : Number(openChatId);
 
+        // ЗАХИСТ 2: Даємо крихітну затримку (таймаут), щоб твої масиви типу chatBtns 
+        // та інші глобальні змінні сторінки точно встигли наповнитися елементами
+        setTimeout(() => {
+            console.log("Спроба автоматично відкрити чат з ID:", parsedId);
+            
+            // Перевіряємо, чи взагалі існує кнопка такого чату на сторінці
+            const targetBtn = document.querySelector(`[data-id="${parsedId}"]`);
+            
+            if (targetBtn) {
+                openChat(parsedId);
+            } else {
+                console.warn(`Чат з ID ${parsedId} не знайдено серед доступних кнопок чату.`);
+            }
+
+            // Очищаємо URL від параметра, щоб не смикати чат при F5
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+        }, 100); // 100 мілісекунд затримки зазвичай достатньо
+    }
+});

@@ -53,25 +53,62 @@
 
     <div class = "side_panel_div">
         <div class = "side_panel_text">
-            <a class = "side_panel_link">Дивитись всі</a>
+            <a href = '../friends/'  class = "side_panel_link">Дивитись всі</a>
             <p class = "side_panel_p">Запити</p>
         </div>
         <div class = "side_panel_content">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            {% for recent_request in recent_requests %}
+                <div class="recent_request recent_action">
+                    <img class = 'follower_div' src = "{% static 'images/avatar_test.png' %}">
+                    <div class="from_user_info">
+                        <h3>{% if recent_request.from_user.profile.pseudonym %}
+                            {{recent_request.from_user.profile.pseudonym}}
+                            {% else %}
+                            Користувач
+                            {% endif %}
+                        </h3>
+                        <h4>4.3к підписників</h4>
+                    </div>
+                </div>
+            {% endfor %}
 
         </div>
     </div>
     <div class = "side_panel_div">
         <div class = "side_panel_text">
-            <a class = "side_panel_link">Дивитись всі</a>
+            <a href = '../chat/' class = "side_panel_link">Дивитись всі</a>
             <p class = "side_panel_p">Повідомлення</p>
         </div>
         <div class = "side_panel_content">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
-            <img class = 'follower_div' src = "{% static 'images/friend_test.png' %}">
+            {% for recent_message in recent_messages %}
+                <div class="recent_message recent_action" data-chat-id="{{ recent_message.chat_id }}">
+                    <img class = 'follower_div' src = "{% static 'images/avatar_test.png' %}">
+                    <div class="from_user_info">
+                        <h3>
+                            {% if recent_message.chat_name %}
+                                {{recent_message.chat_name}}
+                            {% else %}
+                                {% if recent_message.last_message_sender.profile.pseudonym %}
+                                {{recent_message.last_message_sender.profile.pseudonym}}
+                                {% else %}
+                                Користувач
+                                {% endif %}
+                            {% endif %}
+                        </h3>
+                        <h4>
+                            {{recent_message.last_message}}
+                        </h4>
+                    </div>
+                    <h5 class="recent_message_date">                            
+                        
+                        {% if recent_message.is_today %}
+                            {{ recent_message.last_message_date|date:"H:i" }}
+                        {% else %}
+                            {{ recent_message.last_message_date|date:"d.m.Y" }}
+                        {% endif %}
+                    </h5>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

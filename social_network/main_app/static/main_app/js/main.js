@@ -342,3 +342,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 })
 });
+
+document.querySelectorAll('.recent_action').forEach(element => {
+    element.addEventListener('click', () => {
+        const chatId = element.dataset.chatId;
+        if (chatId) {
+            // Перенаправляємо на сторінку чатів із query-параметром ?open_id=...
+            window.location.href = `/chat/?open_id=${chatId}`;
+        }
+    });
+});

@@ -8,8 +8,7 @@
     border-width: 0.1vh;
     display: flex;
     flex-direction: column;
-    padding: 4%;
-    padding-top: 2%;
+   padding-bottom: 4%;
     background-color:#ffffff ;
 }
 
@@ -77,14 +76,10 @@
 .side_panel_content{
     display: flex;
     flex-direction: column;
-    gap: 1vh;
     padding-top: 1vh;
 }
 
-.follower_div{
-    width: 100%;
-    
-}
+
 
 #form_username_div{
     display: flex;
@@ -114,3 +109,53 @@ label{
     gap:clamp(1px, 2vh, 22px);
 }
 
+.recent_action{
+    max-width: 100%;
+    height: clamp(1px, 6.1vh, 46px);
+    display: flex;
+    flex-direction: row;
+    gap: 4%;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.recent_action img{
+    height: 100%;
+}
+
+.recent_action h4{
+    font-weight: 100;
+    font-size: 1rem;
+    color: #81818D;
+}
+
+.recent_message h4{
+    color: #070A1C!important;
+}
+
+.recent_message h5{
+    display: flex;
+    position: relative;
+    font-weight: 100;
+    color: #81818D;
+    justify-self: right;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.side_panel_link{
+    text-decoration: none;
+    color: #543C52;
+}
+
+.recent_message{
+    transition: 0.2s ease;
+}
+
+.recent_message.recent_action:hover {
+    background-color: #E9E5EE;
+    cursor: pointer; /* Змінює курсор на "пальчик", щоб користувач розумів, що це посилання */
+    transition: background-color 0.2s ease; /* Робить зміну кольору плавною */
+}
