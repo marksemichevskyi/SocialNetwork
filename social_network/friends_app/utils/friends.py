@@ -1,5 +1,5 @@
 from user_app.models import User
-from ..models import Friendship
+from user_app.models import Friendship
 def get_friends_by_section(current_user, section):
     if section == "requests":
         active_requests = Friendship.objects.filter(to_user=current_user, status='pending')

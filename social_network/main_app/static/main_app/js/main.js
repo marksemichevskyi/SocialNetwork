@@ -296,51 +296,68 @@ btnFormClose.addEventListener('click', ()=> {
     postContainer.classList.add('disable')
 })
 
-const usernameCheck = document.querySelector("#username_pop-up")
-const formUsername = document.querySelector("#form_username")
-const usernameErrorContainer = document.querySelector("#username_error_container")
+const usernameCheck = document.querySelector("#username_pop-up");
+const formUsername = document.querySelector("#form_username");
+const usernameErrorContainer = document.querySelector("#username_error_container");
+
 document.addEventListener("DOMContentLoaded", async () => {
-    const checkResponse = await fetch("set_username/", {
-        method: "GET",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
+    // 1. Робимо правильний GET-запит для перевірки, чи потрібен профіль
+    try {
+        const checkResponse = await fetch("set_username/", {
+            method: "GET", // Змінено на GET, бо в Django це метод get()
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+
+        const checkData = await checkResponse.json();
+
+        if (checkData.needs_profile) {
+            usernameCheck.classList.remove('disable');
+        }
+    } catch (err) {
+        console.error("Помилка перевірки профілю:", err);
+    }
+
+    // 2. Обробка відправки форми (сабміт)
+    formUsername.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Тепер event на своєму місці і працює
+        
+        const formData = new FormData(event.target);
+
+        try {
+            const response = await fetch(formUsername.action, {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': "XMLHttpRequest",
+                },
+                body: formData // Передаємо як FormData (у Django views ми це врахували)
+            });
+
+            const data = await response.json();
+
+            if (data.success === true) {
+                formUsername.reset();
+                usernameCheck.classList.add('disable');
+                
+                // Перезавантажуємо сторінку, щоб оновити псевдонім в інтерфейсі сайту
+                window.location.reload(); 
+            } else {
+                usernameErrorContainer.innerHTML = '';
+                for (const key in data.errors) {
+                    const errors = data.errors[key];
+                    errors.forEach(error => {
+                        const errorElement = document.createElement('p');
+                        errorElement.textContent = error.message;
+                        usernameErrorContainer.append(errorElement);
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Помилка відправки форми:", err);
         }
     });
-
-    const checkData = await checkResponse.json();
-
-    if (checkData.needs_profile) {
-        usernameCheck.classList.remove('disable')
-    }
-
-    formUsername.addEventListener('submit', async function(event){
-    event.preventDefault()
-    const formData = new FormData(event.target)
-
-    const response = await fetch(formUsername.action,{
-        method: "POST",
-        headers:{
-            'X-CSRFToken': getCSRFToken(),
-            'X-Requested-With': "XMLHttpRequest",
-        },
-        body: formData
-    })
-    const data = await response.json()
-    if (data.success == true) {
-        formUsername.reset()
-        usernameCheck.classList.add('disable')
-    } else {
-        usernameErrorContainer.innerHTML = ''
-        for (const key in data.errors) {
-            const errors = data.errors[key];
-            errors.forEach(error => {
-                const errorElement = document.createElement('p')
-                errorElement.textContent = error.message
-                usernameErrorContainer.append(errorElement)
-            });
-        }
-    }
-})
 });
 
 document.querySelectorAll('.recent_action').forEach(element => {

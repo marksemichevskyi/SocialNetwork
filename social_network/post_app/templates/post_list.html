@@ -23,7 +23,7 @@
             </div>
 
         </div>
-
+        {% if post %}
         <div class="post_div">
 
             <h3>{{ post.topic }}</h3>
@@ -31,19 +31,19 @@
             <p>{{ post.content }}</p>
 
             <div class="post_links">
-
-                {% for link in post.links.all %}
-                    <a href = '{{ link.url }}'>{{ link.url }}</a>
-                {% endfor %}
-
+                {% if post.links%}
+                    {% for link in post.links.all %}
+                        <a href = '{{ link.url }}'>{{ link.url }}</a>
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <div class="post_image_div">
-
-                {% for image in post.images.all %}
-                    <img src="{{ image.compressed.url }}">
-                {% endfor %}
-
+                {% if post.images%}
+                    {% for image in post.images.all %}
+                        <img src="{{ image.compressed.url }}">
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <div class="post_info_div">
@@ -75,7 +75,7 @@
             </div>
 
         </div>
-
+        {% endif %}
     </div>
 
 {% endfor %}

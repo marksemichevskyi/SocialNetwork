@@ -21,7 +21,7 @@ class PostView(LoginRequiredMixin, TemplateView):
 
         context['tag_form'] = PostTagForm()
 
-        context['tags'] = PostTag.objects.all()
+        context['tags'] = Tag.objects.all()
 
         context['posts'] = Post.objects.all().filter(author_id=self.request.user.id).order_by('-created_at')[:5] 
 

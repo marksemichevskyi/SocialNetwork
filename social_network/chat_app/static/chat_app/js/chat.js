@@ -669,75 +669,28 @@ document.querySelector("#edit_group_cancel").addEventListener("click", () => {
 
 //----------------------------------------------------OPEN CHAT-----------------------------------------------------------------
 async function openChat(id) {
-    // ЗАХИСТ 1: Негайно вимикаємо старий обсервер ДО очищення повідомлень.
-    // Якщо цього не зробити, порожній екран спровокує хибне завантаження історії.
+    // 1. ЗАХИСТ ВІД ДУБЛЮВАННЯ СОКЕТІВ (Робимо негайно на початку)
+    if (chatSocket) {
+        chatSocket.close();
+        chatSocket = null;
+    }
+
     if (observer) {
         observer.disconnect();
         observer = null;
     }
 
-    chatName.innerHTML = ""
-    chatBtns.forEach(chatBtn => {
-        if(chatBtn.getAttribute('data-id') == id){
-            chatBtns.forEach(notBtn => {
-                notBtn.classList.remove('selected_contact')
-            }) 
-            chatBtn.classList.add('selected_contact')
-        }
-    });
-    
-    const selectedContact = document.querySelector('.selected_contact')
-    const selectedContactName = selectedContact.querySelector('h3').textContent
-    
-    notSelectContainer.style.display = "none"
-    chat.style.display = "flex"
-    chatName.innerHTML = `
-        <h1>${selectedContactName}</h1>
-        <h3 id = 'groupHeader'></h3>`
+    chatId = id; // Фіксуємо поточний ID чату
+    pageNumber = 1;
 
-    // Очищаємо контейнер від старих елементів
-    messages.querySelectorAll(".message").forEach((msg) => msg.remove())
-    messages.querySelectorAll(".message-date").forEach((date) => date.remove())
-
-    pageNumber = 1
-    chatId = id 
-    await loadMessages(chatId) 
-
-    if (chatId !== id) return;
-
-    getGroupUsers(id)
-    createDateMessage() 
-    
-    adminGroupSettings.classList.remove('user_settings')
-    groupSettings.classList.remove('user_settings')
-
-    setTimeout(() => {
-        if (chatId !== id) return; 
-        scrollToBottom(false);
-        initPaginationObserver();
-    }, 50);
-
-    const indicators = document.querySelectorAll(".indicator")
-    indicators.forEach(indicator => {
-        if(indicator.dataset.id == chatId){
-            
-            indicator.classList.remove("unread")
-        }
-    })
-
-    if (chatSocket){
-        chatSocket.close()
-    }
-    
+    // 2. ІНІЦІАЛІЗАЦІЯ ВЕБ-СОКЕТА НА ПОЧАТКУ
     let url = `ws://${window.location.host}/chat/${chatId}`;
-    chatSocket = new WebSocket(url)
+    chatSocket = new WebSocket(url);
     
     chatSocket.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        
+        const data = JSON.parse(event.data);
         if (data.message) {
             const currentLocalDate = new Date().toISOString().split('T')[0];
-
             createMessage(
                 data.message.sender_pseudonym, 
                 data.message.sender_id, 
@@ -747,18 +700,60 @@ async function openChat(id) {
                 currentUserId,
                 currentLocalDate,
                 data.message.images,
-            )
-            
-            getLastMessage(chatId, data.message.text, data.message.datetime, data.message.message_id)
-            renderCountUnreadedMessages()
-            createDateMessage() 
-            scrollToBottom(true)
+            );
+            getLastMessage(chatId, data.message.text, data.message.datetime, data.message.message_id);
+            renderCountUnreadedMessages();
+            createDateMessage(); 
+            scrollToBottom(true);
         }
+    };
 
-    }  
-    renderCountUnreadedMessages()
+    // 3. ВІЗУАЛЬНЕ ОЧИЩЕННЯ
+    chatName.innerHTML = "";
+    chatBtns.forEach(chatBtn => {
+        if(chatBtn.getAttribute('data-id') == id){
+            chatBtns.forEach(notBtn => notBtn.classList.remove('selected_contact'));
+            chatBtn.classList.add('selected_contact');
+        }
+    });
+    
+    const selectedContact = document.querySelector('.selected_contact');
+    const selectedContactName = selectedContact ? selectedContact.querySelector('h3').textContent : "Чат";
+    
+    notSelectContainer.style.display = "none";
+    chat.style.display = "flex";
+    chatName.innerHTML = `<h1>${selectedContactName}</h1><h3 id='groupHeader'></h3>`;
+
+    messages.querySelectorAll(".message").forEach((msg) => msg.remove());
+    messages.querySelectorAll(".message-date").forEach((date) => date.remove());
+
+    // 4. ЗАВАНТАЖЕННЯ ДАНИХ (Асинхронні виклики зміщені вниз)
+    await loadMessages(chatId); 
+
+    // Перевірка: якщо поки йшов запит, користувач вже тицьнув на інший чат — зупиняємось
+    if (chatId !== id) return;
+
+    getGroupUsers(id);
+    createDateMessage(); 
+    
+    adminGroupSettings.classList.remove('user_settings');
+    groupSettings.classList.remove('user_settings');
+
+    setTimeout(() => {
+        if (chatId !== id) return; 
+        scrollToBottom(false);
+        initPaginationObserver(); // Обсервер вмикаємо строго ПІСЛЯ завантаження історії
+    }, 50);
+
+    const indicators = document.querySelectorAll(".indicator");
+    indicators.forEach(indicator => {
+        if(indicator.dataset.id == chatId){
+            indicator.classList.remove("unread");
+        }
+    });
+
+    renderCountUnreadedMessages();
 }
-
 
 chatBtns.forEach(btn => {
     btn.addEventListener('click', ()=>{
@@ -780,105 +775,126 @@ chatBtns.forEach(btn => {
 
 
 //------------------------------------------------------------SEND MESSAGE--------------------------------------------------------
-const sendMsg = document.querySelector("#send-msg")
-const msgInput = document.querySelector("#msg-input")
+const sendMsg = document.querySelector("#send-msg");
+const msgInput = document.querySelector("#msg-input");
 
+// Функція для безпечної відправки даних у сокет
+function safeSocketSend(payload) {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify(payload));
+        return true;
+    } else if (chatSocket && chatSocket.readyState === WebSocket.CONNECTING) {
+        console.warn("Попередження: Сокет у стані підключення. Зачекайте секунду...");
+        alert("З'єднання з чатом ще встановлюється. Спробуйте знову через мить.");
+    } else {
+        console.error("Помилка: WebSocket закритий або не існує. Стан:", chatSocket ? chatSocket.readyState : "null");
+        alert("Помилка з'єднання. Спробуйте перезавантажити сторінку або перевідкрити чат.");
+    }
+    return false;
+}
 
+// Функція збору даних форми та відправки
+async function handleMessageSubmit() {
+    const text = msgInput.value.trim();
+    const files = typeof msgImageInput !== 'undefined' ? msgImageInput.files : [];
 
+    if (text === "" && (!files || files.length === 0)) return;
+
+    let base64Images = [];
+
+    if (files && files.length > 0) {
+        const filePromises = Array.from(files).map(async (file) => {
+            const base64Str = await fileToBase64(file);
+            return {
+                name: file.name,
+                data: base64Str
+            };
+        });
+        base64Images = await Promise.all(filePromises);
+    }
+
+    // Намагаємось надіслати через безпечну функцію
+    const isSent = safeSocketSend({
+        "msg": text,
+        "images": base64Images
+    });
+
+    if (isSent) {
+        // Очищаємо поля лише якщо сокет успішно прийняв дані
+        msgInput.value = '';
+        if (typeof msgImageInput !== 'undefined') msgImageInput.value = null;
+    }
+}
+
+// 1. Обробка натискання Enter (тепер викликає спільну логіку з картинками)
 msgInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        event.preventDefault()
-
-        chatSocket.send(
-            JSON.stringify({
-                msg: msgInput.value
-            })
-        );
-
-        msgInput.value = ''
+        event.preventDefault();
+        handleMessageSubmit();
     }
+});
+
+// 2. Обробка кліку на кнопку відправки
+sendMsg.addEventListener("click", async () => {
+    await handleMessageSubmit();
 });
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve(reader.result)
-        reader.onerror = error => reject(error)
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
     });
 }
 
-sendMsg.addEventListener("click", async () => {
-    const text = msgInput.value.trim()
-    const files = msgImageInput.files
-
-    if (text === "" && files.length === 0) return
-
-    let base64Images = []
-
-    if (files.length > 0) {
-        // Конвертуємо FileList у масив промісів
-        const filePromises = Array.from(files).map(async (file) => {
-            const base64Str = await fileToBase64(file)
-            return {
-                name: file.name,
-                data: base64Str
-            }
-        })
-        base64Images = await Promise.all(filePromises)
-    }
-
-    // Відправка в сокет
-    chatSocket.send(
-        JSON.stringify({
-            "msg": text,
-            "images": base64Images
-        })
-    )
-
-    // Очищення полів
-    msgInput.value = ''
-    msgImageInput.value = null // ВИПРАВЛЕНО: скидаємо значення інпуту файлів повністю
-})
-
+// 3. Створення чатів при кліку на друзів
 friendDivs.forEach(div => {
-    div.addEventListener('click', async ()=>{
-        const response = await fetch('/chat/create/', {
-            method: "POST",
-            headers: {
-                'X-CSRFToken' : csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            }, 
-            body: JSON.stringify({
-                friend_id: div.dataset.id
-            })
-        })
-        const data = await response.json()
-        if (data.is_new){
-            console.log(data)
-            const newChat = document.createElement("button")
-            newChat.dataset.id = data.chat_id
-            newChat.classList.add("created_chat")
-            newChat.innerHTML = `
-                <img src = "${senderAvatar}">
-                <span class = 'friend_message'>
-                <h3>${data.friend_pseudonym}</h3>
-                <h4 class="latest_message">                            
-                    Повідомлень нема
-                    </h4>
-                </span>
-                <h5 class="message_date format-chat-date"></h5>
-                `
-            newChat.dataset.id = data.chat_id
-            document.querySelector('.last_chat_messages').append(newChat)
-            getChats()
-            newChat.addEventListener('click', ()=>{
-                openChat(data.chat_id)
-            })
+    div.addEventListener('click', async () => {
+        try {
+            const response = await fetch('/chat/create/', {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    friend_id: div.dataset.id
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.is_new) {
+                console.log("Створено новий чат:", data);
+                const newChat = document.createElement("button");
+                newChat.dataset.id = data.chat_id;
+                newChat.classList.add("created_chat");
+                newChat.innerHTML = `
+                    <img src="${senderAvatar}">
+                    <span class='friend_message'>
+                        <h3>${data.friend_pseudonym}</h3>
+                        <h4 class="latest_message">Повідомлень нема</h4>
+                    </span>
+                    <h5 class="message_date format-chat-date"></h5>
+                `;
+                document.querySelector('.last_chat_messages').append(newChat);
+                getChats();
+                
+                newChat.addEventListener('click', () => {
+                    openChat(data.chat_id);
+                });
+            }
+            
+            // Відкриваємо чат (тут створюється websocket з'єднання всередині openChat)
+            openChat(data.chat_id);
+            
+        } catch (err) {
+            console.error("Помилка створення/відкриття чату:", err);
         }
-        openChat(data.chat_id)
-    })
-})
+    });
+});
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
 

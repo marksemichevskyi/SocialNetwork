@@ -1,7 +1,6 @@
 from django import forms
 from user_app.models import User
 from profile_app.models import Profile
-
 from post_app.forms import *
 
 class UsernameForm(forms.ModelForm):
@@ -48,16 +47,30 @@ class UsernameForm(forms.ModelForm):
             
         return value
 
+    # ТЕПЕР МЕТОД SAVE ВСЕРЕДИНІ КЛАСУ (ДОДАНО ВІДСТУПИ)
     def save(self, commit=True):
-
         user = super().save(commit=False)
         if commit:
             user.save()
         
-        profile, created = Profile.objects.get_or_create(user=user)
+        # Передаємо обидва поля в defaults для створення запису
+        profile, created = Profile.objects.get_or_create(
+            user=user,
+            defaults={
+                'is_text_signature': False,
+                'is_image_signature': False,
+            }
+        )
+        
+        # Оновлюємо дані профілю
         profile.pseudonym = self.cleaned_data.get('pseudonym')
         
+        # Примусово виставляємо False для обох полів перед збереженням
+        profile.is_text_signature = False
+        profile.is_image_signature = False
+            
         if commit:
             profile.save()
             
+        user.profile = profile 
         return user

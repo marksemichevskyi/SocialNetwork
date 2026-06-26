@@ -9,7 +9,7 @@ from post_app.forms import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
-from friends_app.models import Friendship
+from user_app.models import Friendship
 from chat_app.models import Chat, Message
 from django.utils.timezone import localtime, now
 # Create your views here.
@@ -20,16 +20,22 @@ class MainView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         
+        # Передаємо інстанс користувача у форму, якщо він авторизований
+        if user.is_authenticated:
+            form_username = UsernameForm(instance=user)
+        else:
+            form_username = UsernameForm()
+
         context.update({
-            "form_username": UsernameForm(),
+            "form_username": form_username, # <--- ТЕПЕР ФОРМА БУДЕ ЗНАПОВНЕНИМИ ДАНИМИ
             "form_post": PostForm(),
             "tag_form": PostTagForm(),
-            "tags": PostTag.objects.all(),
+            "tags": Tag.objects.all(),
             "posts": Post.objects.select_related('author').order_by('-created_at')[:5]
         })
 
-        user = self.request.user
         if not user.is_authenticated:
             return context
 
@@ -103,7 +109,6 @@ class UsernameView(LoginRequiredMixin, View):
 
         if not hasattr(user, 'profile'):
             return JsonResponse({"needs_profile": True})
-            
 
         pseudonym = user.profile.pseudonym
         
@@ -112,21 +117,23 @@ class UsernameView(LoginRequiredMixin, View):
             
         return JsonResponse({"needs_profile": False})
 
-    
     def post(self, request):
-        form = UsernameForm(request.POST, instance=request.user)
+        # 1. Перевірка авторизації має бути першою
         if not request.user.is_authenticated:
-            return JsonResponse(data = {
+            return JsonResponse(status=403, data={
                 'success': False,
-                "errors": form.errors.get_json_data()
-                
-        })
+                "errors": {"auth": [{"message": "Користувач не авторизований"}]}
+            })
+
+        # 2. Оскільки у JS використовується new FormData(), дані лежать в request.POST
+        form = UsernameForm(request.POST, instance=request.user)
+        
+        # 3. Валідація та збереження
         if form.is_valid():
-
             form.save()
-
             return JsonResponse({"success": True})
 
+        # Якщо форма зафейлилась, повертаємо помилки
         return JsonResponse({
             "success": False,
             "errors": form.errors.get_json_data()

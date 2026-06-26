@@ -3,7 +3,7 @@ from django.core.files.base import ContentFile
 from io import BytesIO
 from PIL import Image
 
-from .models import Post, PostLink, PostImage, PostTag
+from .models import Post, PostLink, PostImage, Tag
 
 MAX_COMPRESSED_SIZE = 5 * 1024 * 1024
 
@@ -26,7 +26,7 @@ class PostForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         label="Оберіть теги",
         required=False,
-        queryset=PostTag.objects.all(),
+        queryset=Tag.objects.all(),
         widget=forms.CheckboxSelectMultiple,
     )
 
@@ -147,8 +147,8 @@ class PostForm(forms.ModelForm):
             for image in self.images_list:
                 PostImage.objects.create(
                     post=post,
-                    original=image,
-                    compressed=self.compress_image(image),
+                    original_image=image,                  # Виправлено
+                    compressed_image=self.compress_image(image),  # Виправлено
                 )
 
         return post
@@ -156,7 +156,7 @@ class PostForm(forms.ModelForm):
 
 class PostTagForm(forms.ModelForm):
     class Meta:
-        model = PostTag
+        model = Tag
         fields = ["name"]
         labels = {
             "name": "Назва", 

@@ -99,7 +99,8 @@ if DATABASE_TYPE == 'postgresql':
             'USER': os.getenv('DB_USER'),                
             'PASSWORD': os.getenv('DB_PASSWORD'),            
             'HOST': os.getenv('DB_LOCAL_HOST'),                
-            'PORT': os.getenv('DB_LOCAL_PORT'),                   
+            'PORT': os.getenv('DB_LOCAL_PORT'),       
+            'DISABLE_SERVER_SIDE_CURSORS': True,            
         }
     }
 else:

@@ -1,5 +1,5 @@
 from django.utils import timezone 
-from ..models import Friendship
+from user_app.models import Friendship
 from django.db.models import Q
 
 def add_friend_request(user, other_user):

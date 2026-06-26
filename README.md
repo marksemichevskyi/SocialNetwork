@@ -216,10 +216,10 @@ Preview:
 * Future development paths include adding full End-to-End Encryption (E2EE) for chats and introducing video/audio streaming.
 
 
-### 6. Team Members
+### 6. Team members
 * **Mark Semichevskyi - https://github.com/marksemichevskyi**
-* **Kirill  - https://github.com/marksemichevskyi**
-* **Ihor - https://github.com/marksemichevskyi**
+* **Kirill Varyzhuk - https://github.com/Kirill213-wq**
+* **Ihor - https://github.com/Ihor1020**
 
 
 
@@ -435,5 +435,5 @@ Preview:
 
 ### 6. Склад команди
 * **Mark Semichevskyi - https://github.com/marksemichevskyi**
-* **Kirill Varyzhuk - https://github.com/marksemichevskyi**
+* **Kirill Varyzhuk - https://github.com/Kirill213-wq**
 * **Ihor - https://github.com/Ihor1020**
